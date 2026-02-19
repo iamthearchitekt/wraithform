@@ -1,0 +1,14 @@
+﻿MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Checking File Globs
+  ClosedHoodVisualizer_rc_lib.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_vs\ClosedHoodVisualizer_rc_lib.dir\Release\ClosedHoodVisualizer_rc_lib.lib
+  PluginProcessor.cpp
+  PluginEditor.cpp
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginProcessor.h(4,10): error C1083: Cannot open include file: 'JuceHeader.h': No such file or directory [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_vs\ClosedHoodVisualizer.vcxproj]
+  (compiling source file '../Source/PluginProcessor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginProcessor.h(4,10): error C1083: Cannot open include file: 'JuceHeader.h': No such file or directory [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_vs\ClosedHoodVisualizer.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+  Generating Code...
+  ClosedHoodVisualizer_vst3_helper.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_vs\Release\ClosedHoodVisualizer_vst3_helper.exe

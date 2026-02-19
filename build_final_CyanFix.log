@@ -1,0 +1,49 @@
+﻿MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Checking File Globs
+  1>Checking Build System
+  Generating WraithForm_artefacts/JuceLibraryCode/WraithForm_resources.rc
+  Building Custom Rule C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt
+  WraithForm_rc_lib.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm_rc_lib.dir\Release\WraithForm_rc_lib.lib
+  Building Custom Rule C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt
+  PluginProcessor.cpp
+  PluginEditor.cpp
+  juce_audio_processors.cpp
+  juce_gui_extra.cpp
+  juce_gui_basics.cpp
+  juce_graphics.cpp
+  juce_graphics_Harfbuzz.cpp
+  juce_events.cpp
+  juce_core.cpp
+  juce_core_CompilationTime.cpp
+  juce_data_structures.cpp
+  juce_audio_processors_headless.cpp
+  juce_audio_processors_headless_ara.cpp
+  juce_audio_processors_headless_lv2_libs.cpp
+  juce_audio_basics.cpp
+  juce_audio_utils.cpp
+  juce_audio_formats.cpp
+  juce_audio_devices.cpp
+  juce_opengl.cpp
+  juce_dsp.cpp
+  Generating Code...
+  juce_graphics_Sheenbidi.c
+  Microsoft (R) Library Manager Version 14.44.35222.0
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  "/OUT:C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm_artefacts\Release\WraithForm_SharedCode.lib" /NOLOGO /MACHINE:X64 /machine:x64 WraithForm.dir\Release\PluginProcessor.obj 
+  WraithForm.dir\Release\PluginEditor.obj 
+  WraithForm.dir\Release\juce_audio_processors.obj 
+  WraithForm.dir\Release\juce_gui_extra.obj 
+  WraithForm.dir\Release\juce_gui_basics.obj 
+  WraithForm.dir\Release\juce_graphics.obj 
+  WraithForm.dir\Release\juce_graphics_Harfbuzz.obj 
+  WraithForm.dir\Release\juce_graphics_Sheenbidi.obj 
+  WraithForm.dir\Release\juce_events.obj 
+  WraithForm.dir\Release\juce_core.obj 
+  WraithForm.dir\Release\juce_core_CompilationTime.obj 
+  WraithForm.dir\Release\juce_data_structures.obj 
+  WraithForm.dir\Release\juce_audio_processors_headless.obj 
+LINK : fatal error LNK1104: cannot open file 'WraithForm.dir\Release\juce_audio_processors_headless.obj' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]

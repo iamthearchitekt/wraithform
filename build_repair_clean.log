@@ -1,0 +1,131 @@
+﻿MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Checking File Globs
+  1>Checking Build System
+  Generating WraithForm_artefacts/JuceLibraryCode/WraithForm_resources.rc
+  Building Custom Rule C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt
+  WraithForm_rc_lib.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm_rc_lib.dir\Release\WraithForm_rc_lib.lib
+  Building Custom Rule C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt
+  PluginProcessor.cpp
+  PluginEditor.cpp
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(29,40): error C2011: 'WraithFormAudioProcessorEditor::DetachedWindow': 'class' type redefinition [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(121,9):
+      see declaration of 'WraithFormAudioProcessorEditor::DetachedWindow'
+  
+  juce_audio_processors.cpp
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(209,34): error C2672: 'std::make_unique': no matching overloaded function found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3640,6):
+      could be 'void std::make_unique(_Types ...)'
+          C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(209,34):
+          'void std::make_unique(_Types ...)': could not deduce template argument for '__formal'
+              C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3639,51):
+              'std::enable_if_t<false,int>' : Failed to specialize alias template
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3634,57):
+      or       'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(const size_t)'
+          C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(209,34):
+          'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(const size_t)': expects 1 arguments - 3 provided
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3629,57):
+      or       'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(_Types ...)'
+          C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(209,34):
+          Failed to specialize function template 'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(_Types ...)'
+              C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(209,34):
+              With the following template arguments:
+                  C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(209,34):
+                  '_Ty=WraithFormAudioProcessorEditor::DetachedWindow'
+                  C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(209,34):
+                  '_Types={const char (&)[13], WraithFormAudioProcessorEditor &, WraithFormAudioProcessorEditor::VisualizerMode}'
+                  C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(209,34):
+                  '__formal=0'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(212,34): error C2672: 'std::make_unique': no matching overloaded function found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3640,6):
+      could be 'void std::make_unique(_Types ...)'
+          C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(212,34):
+          'void std::make_unique(_Types ...)': could not deduce template argument for '__formal'
+              C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3639,51):
+              'std::enable_if_t<false,int>' : Failed to specialize alias template
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3634,57):
+      or       'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(const size_t)'
+          C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(212,34):
+          'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(const size_t)': expects 1 arguments - 3 provided
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3629,57):
+      or       'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(_Types ...)'
+          C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(212,34):
+          Failed to specialize function template 'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(_Types ...)'
+              C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(212,34):
+              With the following template arguments:
+                  C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(212,34):
+                  '_Ty=WraithFormAudioProcessorEditor::DetachedWindow'
+                  C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(212,34):
+                  '_Types={const char (&)[9], WraithFormAudioProcessorEditor &, WraithFormAudioProcessorEditor::VisualizerMode}'
+                  C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(212,34):
+                  '__formal=0'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(215,34): error C2672: 'std::make_unique': no matching overloaded function found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3640,6):
+      could be 'void std::make_unique(_Types ...)'
+          C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(215,34):
+          'void std::make_unique(_Types ...)': could not deduce template argument for '__formal'
+              C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3639,51):
+              'std::enable_if_t<false,int>' : Failed to specialize alias template
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3634,57):
+      or       'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(const size_t)'
+          C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(215,34):
+          'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(const size_t)': expects 1 arguments - 3 provided
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3629,57):
+      or       'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(_Types ...)'
+          C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(215,34):
+          Failed to specialize function template 'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(_Types ...)'
+              C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(215,34):
+              With the following template arguments:
+                  C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(215,34):
+                  '_Ty=WraithFormAudioProcessorEditor::DetachedWindow'
+                  C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(215,34):
+                  '_Types={const char (&)[7], WraithFormAudioProcessorEditor &, WraithFormAudioProcessorEditor::VisualizerMode}'
+                  C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(215,34):
+                  '__formal=0'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(218,34): error C2672: 'std::make_unique': no matching overloaded function found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3640,6):
+      could be 'void std::make_unique(_Types ...)'
+          C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(218,34):
+          'void std::make_unique(_Types ...)': could not deduce template argument for '__formal'
+              C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3639,51):
+              'std::enable_if_t<false,int>' : Failed to specialize alias template
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3634,57):
+      or       'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(const size_t)'
+          C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(218,34):
+          'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(const size_t)': expects 1 arguments - 3 provided
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(3629,57):
+      or       'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(_Types ...)'
+          C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(218,34):
+          Failed to specialize function template 'std::unique_ptr<_Ty,std::default_delete<_Ty>> std::make_unique(_Types ...)'
+              C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(218,34):
+              With the following template arguments:
+                  C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(218,34):
+                  '_Ty=WraithFormAudioProcessorEditor::DetachedWindow'
+                  C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(218,34):
+                  '_Types={const char (&)[12], WraithFormAudioProcessorEditor &, WraithFormAudioProcessorEditor::VisualizerMode}'
+                  C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(218,34):
+                  '__formal=0'
+  
+  juce_gui_extra.cpp
+  juce_gui_basics.cpp
+  juce_graphics.cpp
+  juce_graphics_Harfbuzz.cpp
+  juce_events.cpp
+  juce_core.cpp
+  juce_core_CompilationTime.cpp
+  juce_data_structures.cpp
+  juce_audio_processors_headless.cpp
+  juce_audio_processors_headless_ara.cpp
+  juce_audio_processors_headless_lv2_libs.cpp
+  juce_audio_basics.cpp
+  juce_audio_utils.cpp
+  juce_audio_formats.cpp
+  juce_audio_devices.cpp
+  juce_opengl.cpp
+  juce_dsp.cpp
+  Generating Code...

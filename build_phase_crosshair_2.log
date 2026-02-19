@@ -1,0 +1,45 @@
+﻿MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppClean.targets(77,5): warning : The process cannot access the file 'c:\users\archi\.gemini\antigravity\scratch\closedhoodvisualizer\build_wraithform\wraithform.dir\release\juce_graphics.obj' because it is being used by another process. [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Checking File Globs
+  1>Checking Build System
+  Generating WraithForm_artefacts/JuceLibraryCode/WraithForm_resources.rc
+  Building Custom Rule C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt
+  WraithForm_rc_lib.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm_rc_lib.dir\Release\WraithForm_rc_lib.lib
+  Building Custom Rule C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt
+  PluginProcessor.cpp
+  PluginEditor.cpp
+  juce_audio_processors.cpp
+  juce_gui_extra.cpp
+  juce_gui_basics.cpp
+  juce_graphics.cpp
+  juce_graphics_Harfbuzz.cpp
+  juce_events.cpp
+  juce_core.cpp
+  juce_core_CompilationTime.cpp
+  juce_data_structures.cpp
+  juce_audio_processors_headless.cpp
+  juce_audio_processors_headless_ara.cpp
+  juce_audio_processors_headless_lv2_libs.cpp
+  juce_audio_basics.cpp
+  juce_audio_utils.cpp
+  juce_audio_formats.cpp
+  juce_audio_devices.cpp
+  juce_opengl.cpp
+  juce_dsp.cpp
+  Generating Code...
+  juce_graphics_Sheenbidi.c
+  WraithForm.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm_artefacts\Release\WraithForm_SharedCode.lib
+  Building Custom Rule C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt
+  juce_audio_plugin_client_AAX.cpp
+  juce_audio_plugin_client_AAX_utils.cpp
+  juce_audio_plugin_client_ARA.cpp
+  juce_audio_plugin_client_LV2.cpp
+  juce_audio_plugin_client_Standalone.cpp
+  juce_audio_plugin_client_Unity.cpp
+  juce_audio_plugin_client_VST2.cpp
+  juce_audio_plugin_client_VST3.cpp
+  Generating Code...
+LINK : fatal error LNK1181: cannot open input file 'WraithForm_artefacts\Release\WraithForm_SharedCode.lib' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm_Standalone.vcxproj]

@@ -1,0 +1,33 @@
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Checking File Globs
+  WraithForm_rc_lib.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm_rc_lib.dir\Release\WraithForm_rc_lib.lib
+  PluginEditor.cpp
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(110,35): error C2838: 'WraithVideo': illegal qualified name in member declaration [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(110,35): error C2065: 'WraithVideo': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(165,24): error C2838: 'WraithVideo': illegal qualified name in member declaration [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(165,24): error C2065: 'WraithVideo': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(166,5): error C3861: 'renderWraithView': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(165,24): error C2051: case expression not constant [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(382,38): error C2039: 'renderWraithView': is not a member of 'WraithFormAudioProcessorEditor' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(12,7):
+      see declaration of 'WraithFormAudioProcessorEditor'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(384,30): error C2065: 'openGLContext': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(386,7): error C2065: 'wraithShader': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(389,3): error C2065: 'wraithShader': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(392,36): error C2065: 'wraithShader': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(396,28): error C2065: 'wraithShader': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(397,16): error C3861: 'getWidth': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(397,29): error C3536: 'desktopScale': cannot be used before it is initialized [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(397,52): error C3861: 'getHeight': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(401,28): error C2065: 'wraithShader': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(402,16): error C2065: 'wraithVideo': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(402,49): error C2065: 'wraithVideo': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(406,21): error C2065: 'wraithVideo': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(411,28): error C2065: 'wraithShader': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(415,27): error C2065: 'wraithShader': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(433,3): error C2065: 'wraithShader': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(434,3): error C2065: 'wraithVideo': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(482,5): error C2065: 'wraithShader': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(486,3): error C2065: 'wraithVideo': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]

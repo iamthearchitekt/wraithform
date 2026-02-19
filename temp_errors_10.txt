@@ -1,0 +1,252 @@
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Checking File Globs
+  WraithForm_rc_lib.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm_rc_lib.dir\Release\WraithForm_rc_lib.lib
+  PluginEditor.cpp
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(37,5): error C2144: syntax error: 'float' should be preceded by ';' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(37,11): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(37,30): error C2065: 'u_resolution': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(39,1): error C2059: syntax error: 'if' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(39,24): error C2143: syntax error: missing ';' before '{' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(39,24): error C2447: '{': missing function header (old-style formal list?) [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(44,3): error C2059: syntax error: 'else' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(44,8): error C2143: syntax error: missing ';' before '{' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(44,8): error C2447: '{': missing function header (old-style formal list?) [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(48,1): error C2059: syntax error: '}' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(48,1): error C2143: syntax error: missing ';' before '}' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(50,26): error C2143: syntax error: missing ';' before '{' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(50,26): error C2447: '{': missing function header (old-style formal list?) [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(97,1): error C2059: syntax error: '}' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(97,1): error C2143: syntax error: missing ';' before '}' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(98,1): error C2059: syntax error: ')' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\SpectrogramShader.h(98,2): error C2001: newline in constant [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(53,12): error C2065: 'rawSample': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(58,1): error C2059: syntax error: 'for' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(58,16): error C2143: syntax error: missing ')' before ';' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(58,20): error C2143: syntax error: missing ';' before '<=' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(58,18): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(58,20): error C2059: syntax error: '<=' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(58,27): error C2143: syntax error: missing ';' before '++' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(58,26): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(58,26): error C2086: 'int i': redefinition [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(58,18):
+      see declaration of 'i'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(58,27): error C2059: syntax error: '++' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(58,29): error C2059: syntax error: ')' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(58,31): error C2143: syntax error: missing ';' before '{' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(58,31): error C2447: '{': missing function header (old-style formal list?) [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(62,5): error C2143: syntax error: missing ';' before '/=' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(62,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(62,1): error C2371: 'wSm': redefinition; different basic types [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(54,7):
+      see declaration of 'wSm'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(62,5): error C2059: syntax error: '/=' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(64,24): error C2065: 'LOWPASS_STRENGTH': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(64,11): error C3861: 'mix': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(68,5): error C2143: syntax error: missing ';' before '*=' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(68,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(68,1): error C2371: 'amp': redefinition; different basic types [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(67,7):
+      see declaration of 'amp'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(68,5): error C2059: syntax error: '*=' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(71,15): error C2065: 'uv': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(74,36): error C2065: 'THICKNESS': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(74,20): error C3861: 'smoothstep': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(77,41): error C2065: 'THICKNESS': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(77,60): error C2065: 'GLOW_SIZE': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(77,25): error C3861: 'smoothstep': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(78,41): error C2065: 'THICKNESS': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(78,60): error C2065: 'GLOW_SIZE': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(78,25): error C3861: 'smoothstep': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(81,16): error C3861: 'clamp': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(82,11): error C2065: 'GLOW_INTENSITY': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(86,5): error C3861: 'clamp': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(88,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(88,6): error C2146: syntax error: missing ';' before identifier 'finalColor' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(90,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(90,21): error C2065: 'finalColor': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(90,16): error C3861: 'vec4': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(91,1): error C2059: syntax error: '}' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(91,1): error C2143: syntax error: missing ';' before '}' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(92,1): error C2059: syntax error: ')' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\VisualizerShader.h(92,2): error C2001: newline in constant [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(9,29): error C2065: 'p': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(9,7): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(9,48): error C2065: 'p': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(9,33): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(9,63): error C2065: 'fftOrder': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(9,52): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(10,25): error C2065: 'fftSize': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(10,7): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(10,24): error C2440: 'initializing': cannot convert from 'initializer list' to 'int' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(10,24):
+      The initializer contains too many elements
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(11,78): error C2059: syntax error: '{' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(11,78): error C2143: syntax error: missing ';' before '{' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(11,78): error C2447: '{': missing function header (old-style formal list?) [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(50,3): error C3861: 'glGenTextures': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(51,17): error C2065: 'GL_TEXTURE_2D': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(51,3): error C3861: 'glBindTexture': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(55,19): error C2065: 'GL_TEXTURE_2D': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(55,34): error C2065: 'GL_TEXTURE_MIN_FILTER': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(55,57): error C2065: 'GL_LINEAR': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(55,3): error C3861: 'glTexParameteri': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(56,19): error C2065: 'GL_TEXTURE_2D': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(56,34): error C2065: 'GL_TEXTURE_MAG_FILTER': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(56,57): error C2065: 'GL_LINEAR': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(56,3): error C3861: 'glTexParameteri': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(57,19): error C2065: 'GL_TEXTURE_2D': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(57,34): error C2065: 'GL_TEXTURE_WRAP_S': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(57,53): error C2065: 'GL_CLAMP_TO_EDGE': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(57,3): error C3861: 'glTexParameteri': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(58,19): error C2065: 'GL_TEXTURE_2D': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(58,34): error C2065: 'GL_TEXTURE_WRAP_T': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(58,53): error C2065: 'GL_CLAMP_TO_EDGE': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(58,3): error C3861: 'glTexParameteri': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(100,28): error C2039: 'getLinkedAttempted': is not a member of 'juce::OpenGLShaderProgram' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\_deps\juce-src\modules\juce_opengl\opengl\juce_OpenGLShaderProgram.h(44,17):
+      see declaration of 'juce::OpenGLShaderProgram'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(107,7): error C3861: 'getUniformLocation': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(113,7): error C3861: 'getUniformLocation': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(127,7): error C3861: 'getUniformLocation': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(133,7): error C3861: 'getAttribLocation': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(149,59): error C2039: 'getLinkedAttempted': is not a member of 'juce::OpenGLShaderProgram' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\_deps\juce-src\modules\juce_opengl\opengl\juce_OpenGLShaderProgram.h(44,17):
+      see declaration of 'juce::OpenGLShaderProgram'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(185,7): error C3861: 'getUniformLocation': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(187,7): error C3861: 'getUniformLocation': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(193,7): error C3861: 'getUniformLocation': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(198,7): error C3861: 'getUniformLocation': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,7): error C3861: 'getAttribLocation': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(215,7): error C3861: 'getUniformLocation': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(217,7): error C3861: 'getUniformLocation': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(221,15): error C3861: 'getUniformLocation': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(223,15): error C3861: 'getUniformLocation': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(226,7): error C3861: 'getUniformLocation': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(226,7): error C1003: error count exceeds 100; stopping compilation [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  WraithForm_vst3_helper.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\Release\WraithForm_vst3_helper.exe

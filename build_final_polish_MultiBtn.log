@@ -1,0 +1,33 @@
+﻿MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Checking File Globs
+  1>Checking Build System
+  Generating WraithForm_artefacts/JuceLibraryCode/WraithForm_resources.rc
+  Building Custom Rule C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt
+  WraithForm_rc_lib.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm_rc_lib.dir\Release\WraithForm_rc_lib.lib
+  Building Custom Rule C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt
+  PluginProcessor.cpp
+  PluginEditor.cpp
+  juce_audio_processors.cpp
+  juce_gui_extra.cpp
+  juce_gui_basics.cpp
+  juce_graphics.cpp
+  juce_graphics_Harfbuzz.cpp
+  juce_events.cpp
+  juce_core.cpp
+  juce_core_CompilationTime.cpp
+  juce_data_structures.cpp
+  juce_audio_processors_headless.cpp
+  juce_audio_processors_headless_ara.cpp
+  juce_audio_processors_headless_lv2_libs.cpp
+  juce_audio_basics.cpp
+  juce_audio_utils.cpp
+  juce_audio_formats.cpp
+  juce_audio_devices.cpp
+  juce_opengl.cpp
+  juce_dsp.cpp
+  Generating Code...
+  WraithForm.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm_artefacts\Release\WraithForm_SharedCode.lib
+  WraithForm_Standalone.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm_artefacts\Release\Standalone\WraithForm.exe

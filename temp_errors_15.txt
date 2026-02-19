@@ -1,0 +1,14 @@
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Checking File Globs
+  WraithForm_rc_lib.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm_rc_lib.dir\Release\WraithForm_rc_lib.lib
+  PluginEditor.cpp
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(101,28): error C2039: 'getLinkedAttempted': is not a member of 'juce::OpenGLShaderProgram' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\_deps\juce-src\modules\juce_opengl\opengl\juce_OpenGLShaderProgram.h(44,17):
+      see declaration of 'juce::OpenGLShaderProgram'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(150,59): error C2039: 'getLinkedAttempted': is not a member of 'juce::OpenGLShaderProgram' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\_deps\juce-src\modules\juce_opengl\opengl\juce_OpenGLShaderProgram.h(44,17):
+      see declaration of 'juce::OpenGLShaderProgram'
+  
+  WraithForm_vst3_helper.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\Release\WraithForm_vst3_helper.exe

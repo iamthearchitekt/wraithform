@@ -1,0 +1,6 @@
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Checking File Globs
+  WraithForm_rc_lib.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm_rc_lib.dir\Release\WraithForm_rc_lib.lib
+  PluginProcessor.cpp
+  PluginEditor.cpp

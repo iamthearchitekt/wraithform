@@ -1,0 +1,75 @@
+﻿MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Checking File Globs
+  WraithForm_rc_lib.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm_rc_lib.dir\Release\WraithForm_rc_lib.lib
+  PluginProcessor.cpp
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(65,13): error C2039: 'GLuint': is not a member of 'juce::gl' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginProcessor.cpp')
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\_deps\juce-src\modules\juce_opengl\opengl\juce_gl.h(214,11):
+      see declaration of 'juce::gl'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(89,13): error C2039: 'GLuint': is not a member of 'juce::gl' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginProcessor.cpp')
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\_deps\juce-src\modules\juce_opengl\opengl\juce_gl.h(214,11):
+      see declaration of 'juce::gl'
+  
+  PluginEditor.cpp
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(104,46): error C2086: 'std::unique_ptr<juce::OpenGLShaderProgram,std::default_delete<juce::OpenGLShaderProgram>> WraithFormAudioProcessorEditor::spectrogramShader': redefinition [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginProcessor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(35,8): error C3668: 'WraithFormAudioProcessorEditor::openGLContextCreated': method with override specifier 'override' did not override any base class methods [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginProcessor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(36,8): error C3668: 'WraithFormAudioProcessorEditor::paintOpenGL': method with override specifier 'override' did not override any base class methods [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginProcessor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginProcessor.cpp(144,14): error C2259: 'WraithFormAudioProcessorEditor': cannot instantiate abstract class [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(24,7):
+      see declaration of 'WraithFormAudioProcessorEditor'
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginProcessor.cpp(144,14):
+      due to following members:
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginProcessor.cpp(144,14):
+      'void juce::OpenGLRenderer::newOpenGLContextCreated(void)': is abstract
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\_deps\juce-src\modules\juce_opengl\opengl\juce_OpenGLRenderer.h(59,18):
+      see declaration of 'juce::OpenGLRenderer::newOpenGLContextCreated'
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginProcessor.cpp(144,14):
+      'void juce::OpenGLRenderer::renderOpenGL(void)': is abstract
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\_deps\juce-src\modules\juce_opengl\opengl\juce_OpenGLRenderer.h(82,18):
+      see declaration of 'juce::OpenGLRenderer::renderOpenGL'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginProcessor.cpp(144,44): error C2259: 'WraithFormAudioProcessorEditor': cannot instantiate abstract class [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(24,7):
+      see declaration of 'WraithFormAudioProcessorEditor'
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginProcessor.cpp(144,44):
+      due to following members:
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginProcessor.cpp(144,44):
+      'void juce::OpenGLRenderer::newOpenGLContextCreated(void)': is abstract
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\_deps\juce-src\modules\juce_opengl\opengl\juce_OpenGLRenderer.h(59,18):
+      see declaration of 'juce::OpenGLRenderer::newOpenGLContextCreated'
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginProcessor.cpp(144,44):
+      'void juce::OpenGLRenderer::renderOpenGL(void)': is abstract
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\_deps\juce-src\modules\juce_opengl\opengl\juce_OpenGLRenderer.h(82,18):
+      see declaration of 'juce::OpenGLRenderer::renderOpenGL'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(65,13): error C2039: 'GLuint': is not a member of 'juce::gl' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\_deps\juce-src\modules\juce_opengl\opengl\juce_gl.h(214,11):
+      see declaration of 'juce::gl'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(89,13): error C2039: 'GLuint': is not a member of 'juce::gl' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\_deps\juce-src\modules\juce_opengl\opengl\juce_gl.h(214,11):
+      see declaration of 'juce::gl'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(104,46): error C2086: 'std::unique_ptr<juce::OpenGLShaderProgram,std::default_delete<juce::OpenGLShaderProgram>> WraithFormAudioProcessorEditor::spectrogramShader': redefinition [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(35,8): error C3668: 'WraithFormAudioProcessorEditor::openGLContextCreated': method with override specifier 'override' did not override any base class methods [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(36,8): error C3668: 'WraithFormAudioProcessorEditor::paintOpenGL': method with override specifier 'override' did not override any base class methods [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(253,7): error C2065: 'timeLoc': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(254,17): error C2065: 'timeLoc': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+  Generating Code...

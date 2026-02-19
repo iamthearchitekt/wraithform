@@ -1,0 +1,66 @@
+﻿MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Checking File Globs
+  1>Checking Build System
+  Generating WraithForm_artefacts/JuceLibraryCode/WraithForm_resources.rc
+  Building Custom Rule C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt
+  WraithForm_rc_lib.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm_rc_lib.dir\Release\WraithForm_rc_lib.lib
+  Building Custom Rule C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt
+  PluginProcessor.cpp
+  PluginEditor.cpp
+  juce_audio_processors.cpp
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(160,3): error C2065: 'phaseData': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1083,9): error C2065: 'phaseData': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1081,5): error C2198: 'void (__cdecl *const )(GLuint,GLint,GLenum,GLboolean,GLsizei,const void *)': too few arguments for call [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1084,41): error C2065: 'phaseData': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1084,5): error C2198: 'void (__cdecl *const )(GLenum,GLint,GLsizei)': too few arguments for call [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1090,12): error C2065: 'halfW': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1090,22): error C2065: 'halfW': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1090,29): error C2065: 'halfH': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1090,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1090,11): error C2440: 'initializing': cannot convert from 'initializer list' to 'int' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1090,11):
+      The initializer contains too many elements
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1091,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1092,1): error C2059: syntax error: '}' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1092,1): error C2143: syntax error: missing ';' before '}' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1094,57): error C2143: syntax error: missing ';' before '{' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1094,57): error C2447: '{': missing function header (old-style formal list?) [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1128,12): error C2065: 'halfW': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1128,22): error C2065: 'halfW': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1128,29): error C2065: 'halfH': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1128,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1128,1): error C2374: 'glViewport': redefinition; multiple initialization [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1090,1):
+      see declaration of 'glViewport'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1128,1): error C2086: 'int glViewport': redefinition [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1090,1):
+      see declaration of 'glViewport'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1129,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1130,1): error C2059: syntax error: '}' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1130,1): error C2143: syntax error: missing ';' before '}' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1132,57): error C2143: syntax error: missing ';' before '{' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(1132,57): error C2447: '{': missing function header (old-style formal list?) [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm.vcxproj]
+  juce_gui_extra.cpp
+  juce_gui_basics.cpp
+  juce_graphics.cpp
+  juce_graphics_Harfbuzz.cpp
+  juce_events.cpp
+  juce_core.cpp
+  juce_core_CompilationTime.cpp
+  juce_data_structures.cpp
+  juce_audio_processors_headless.cpp
+  juce_audio_processors_headless_ara.cpp
+  juce_audio_processors_headless_lv2_libs.cpp
+  juce_audio_basics.cpp
+  juce_audio_utils.cpp
+  juce_audio_formats.cpp
+  juce_audio_devices.cpp
+  juce_opengl.cpp
+  juce_dsp.cpp
+  Generating Code...

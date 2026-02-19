@@ -1,0 +1,81 @@
+﻿MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Checking File Globs
+  WraithForm_rc_lib.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm_rc_lib.dir\Release\WraithForm_rc_lib.lib
+  PluginProcessor.cpp
+  PluginEditor.cpp
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(29,40): error C2039: 'DetachedWindow': is not a member of 'WraithFormAudioProcessorEditor' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(12,7):
+      see declaration of 'WraithFormAudioProcessorEditor'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(32,57): error C2061: syntax error: identifier 'VisualizerMode' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(82,18): error C3646: 'drawMode': unknown override specifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(82,3): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(34,38): error C2065: 'mode': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(34,29): error C2614: 'DetachedWindow': illegal member initialization: 'drawMode' is not a base or member [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(182,7): error C3861: 'toggleDetachedWindows': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,38): error C2039: 'toggleDetachedWindows': is not a member of 'WraithFormAudioProcessorEditor' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(12,7):
+      see declaration of 'WraithFormAudioProcessorEditor'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(202,7): error C2065: 'numDetachedWindows': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(203,5): error C2065: 'detachedWindows': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(204,5): error C2065: 'numDetachedWindows': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(208,39): error C2601: 'WraithFormAudioProcessorEditor::findTriggerPoint': local function definitions are illegal [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,62):
+      this line contains a '{' which has not yet been matched
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(221,40): error C2601: 'WraithFormAudioProcessorEditor::renderMeters': local function definitions are illegal [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,62):
+      this line contains a '{' which has not yet been matched
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(351,40): error C2601: 'WraithFormAudioProcessorEditor::renderLoudnessDashboard': local function definitions are illegal [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,62):
+      this line contains a '{' which has not yet been matched
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(444,40): error C2601: 'WraithFormAudioProcessorEditor::newOpenGLContextCreated': local function definitions are illegal [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,62):
+      this line contains a '{' which has not yet been matched
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(495,40): error C2601: 'WraithFormAudioProcessorEditor::renderOpenGL': local function definitions are illegal [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,62):
+      this line contains a '{' which has not yet been matched
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(602,40): error C2601: 'WraithFormAudioProcessorEditor::renderCircularOscilloscope': local function definitions are illegal [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,62):
+      this line contains a '{' which has not yet been matched
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(674,40): error C2601: 'WraithFormAudioProcessorEditor::renderOscilloscope': local function definitions are illegal [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,62):
+      this line contains a '{' which has not yet been matched
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(721,40): error C2601: 'WraithFormAudioProcessorEditor::renderSpectrogram': local function definitions are illegal [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,62):
+      this line contains a '{' which has not yet been matched
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(828,40): error C2601: 'WraithFormAudioProcessorEditor::openGLContextClosing': local function definitions are illegal [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,62):
+      this line contains a '{' which has not yet been matched
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(841,40): error C2601: 'WraithFormAudioProcessorEditor::updateAudioData': local function definitions are illegal [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,62):
+      this line contains a '{' which has not yet been matched
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(885,40): error C2601: 'WraithFormAudioProcessorEditor::renderSeratoWaveform': local function definitions are illegal [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,62):
+      this line contains a '{' which has not yet been matched
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(940,40): error C2039: 'renderQuadView': is not a member of 'WraithFormAudioProcessorEditor' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(12,7):
+      see declaration of 'WraithFormAudioProcessorEditor'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(940,40): error C2601: 'renderQuadView': local function definitions are illegal [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,62):
+      this line contains a '{' which has not yet been matched
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(972,40): error C2601: 'WraithFormAudioProcessorEditor::createShaders': local function definitions are illegal [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,62):
+      this line contains a '{' which has not yet been matched
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,62): error C1075: '{': no matching token found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+  Generating Code...

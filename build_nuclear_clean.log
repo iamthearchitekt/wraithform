@@ -1,0 +1,80 @@
+﻿MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Checking File Globs
+  1>Checking Build System
+  Generating WraithForm_artefacts/JuceLibraryCode/WraithForm_resources.rc
+  Building Custom Rule C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt
+  WraithForm_rc_lib.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm_rc_lib.dir\Release\WraithForm_rc_lib.lib
+  Building Custom Rule C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt
+  PluginProcessor.cpp
+  PluginEditor.cpp
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(29,40): error C2039: 'DetachedWindow': is not a member of 'WraithFormAudioProcessorEditor' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(12,7):
+      see declaration of 'WraithFormAudioProcessorEditor'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(32,57): error C2061: syntax error: identifier 'VisualizerMode' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(82,18): error C3646: 'drawMode': unknown override specifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(82,3): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(34,38): error C2065: 'mode': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(34,29): error C2614: 'DetachedWindow': illegal member initialization: 'drawMode' is not a base or member [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(182,7): error C3861: 'toggleDetachedWindows': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(201,38): error C2039: 'toggleDetachedWindows': is not a member of 'WraithFormAudioProcessorEditor' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(12,7):
+      see declaration of 'WraithFormAudioProcessorEditor'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(202,7): error C2065: 'numDetachedWindows': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(203,5): error C2065: 'detachedWindows': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(204,5): error C2065: 'numDetachedWindows': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(209,3): error C2065: 'detachedWindows': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(210,24): error C2355: 'this': can only be referenced inside non-static member functions or non-static data member initializers [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(210,30): error C2653: 'VisualizerMode': is not a class or namespace name [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(210,46): error C2065: 'Oscilloscope': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(211,3): error C2065: 'numDetachedWindows': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(212,3): error C2065: 'detachedWindows': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(213,20): error C2355: 'this': can only be referenced inside non-static member functions or non-static data member initializers [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(213,26): error C2653: 'VisualizerMode': is not a class or namespace name [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(213,42): error C2065: 'Circular': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(214,3): error C2065: 'numDetachedWindows': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(215,3): error C2065: 'detachedWindows': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(216,18): error C2355: 'this': can only be referenced inside non-static member functions or non-static data member initializers [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(216,24): error C2653: 'VisualizerMode': is not a class or namespace name [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(216,40): error C2065: 'Serato': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(217,3): error C2065: 'numDetachedWindows': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(218,3): error C2065: 'detachedWindows': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(219,23): error C2355: 'this': can only be referenced inside non-static member functions or non-static data member initializers [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(219,29): error C2653: 'VisualizerMode': is not a class or namespace name [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(219,45): error C2065: 'Spectrogram': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(220,3): error C2065: 'numDetachedWindows': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(531,5): error C3861: 'renderQuadView': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(940,38): error C2039: 'renderQuadView': is not a member of 'WraithFormAudioProcessorEditor' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(12,7):
+      see declaration of 'WraithFormAudioProcessorEditor'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(942,11): error C3861: 'getWidth': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(943,11): error C3861: 'getHeight': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(944,31): error C2065: 'openGLContext': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(954,3): error C3861: 'renderOscilloscope': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(958,3): error C3861: 'renderCircularOscilloscope': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(962,3): error C3861: 'renderSeratoWaveform': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(966,3): error C3861: 'renderSpectrogram': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+  juce_audio_processors.cpp
+  juce_gui_extra.cpp
+  juce_gui_basics.cpp
+  juce_graphics.cpp
+  juce_graphics_Harfbuzz.cpp
+  juce_events.cpp
+  juce_core.cpp
+  juce_core_CompilationTime.cpp
+  juce_data_structures.cpp
+  juce_audio_processors_headless.cpp
+  juce_audio_processors_headless_ara.cpp
+  juce_audio_processors_headless_lv2_libs.cpp
+  juce_audio_basics.cpp
+  juce_audio_utils.cpp
+  juce_audio_formats.cpp
+  juce_audio_devices.cpp
+  juce_opengl.cpp
+  juce_dsp.cpp
+  Generating Code...

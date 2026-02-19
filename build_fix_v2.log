@@ -1,0 +1,54 @@
+﻿MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Checking File Globs
+  WraithForm_rc_lib.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm_rc_lib.dir\Release\WraithForm_rc_lib.lib
+  PluginProcessor.cpp
+  PluginEditor.cpp
+  Generating Code...
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(231,38): error C2039: 'paintOpenGL': is not a member of 'WraithFormAudioProcessorEditor' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(12,7):
+      see declaration of 'WraithFormAudioProcessorEditor'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(237,3): error C3861: 'updateAudioData': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(247,7): error C2065: 'currentMode': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(247,22): error C2653: 'VisualizerMode': is not a class or namespace name [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(247,38): error C2065: 'Spectrogram': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(248,5): error C3861: 'renderSpectrogram': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(249,12): error C2065: 'currentMode': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(249,27): error C2653: 'VisualizerMode': is not a class or namespace name [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(249,43): error C2065: 'Circular': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(250,5): error C3861: 'renderCircularOscilloscope': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(251,12): error C2065: 'currentMode': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(251,27): error C2653: 'VisualizerMode': is not a class or namespace name [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(251,43): error C2065: 'Serato': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(252,5): error C3861: 'renderSeratoWaveform': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(253,12): error C2065: 'currentMode': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(253,27): error C2653: 'VisualizerMode': is not a class or namespace name [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(253,43): error C2065: 'Oscilloscope': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(254,5): error C3861: 'renderOscilloscope': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(257,3): error C3861: 'renderMeters': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(261,3): error C2065: 'smoothedCorrelation': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(262,7): error C2065: 'smoothedCorrelation': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(262,37): error C2065: 'currentCorrelation': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(264,7): error C2065: 'currentMode': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(264,22): error C2653: 'VisualizerMode': is not a class or namespace name [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(264,38): error C2065: 'Serato': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(265,7): error C2065: 'currentMode': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(265,22): error C2653: 'VisualizerMode': is not a class or namespace name [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(265,38): error C2065: 'Spectrogram': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(267,13): error C3861: 'getWidth': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(268,13): error C3861: 'getHeight': identifier not found [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(269,26): error C2065: 'openGLContext': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(278,21): error C2065: 'smoothedCorrelation': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(283,9): error C2065: 'smoothedCorrelation': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(356,7): error C2065: 'timeLoc': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(357,17): error C2065: 'timeLoc': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(497,38): error C2039: 'setupFilters': is not a member of 'WraithFormAudioProcessorEditor' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(12,7):
+      see declaration of 'WraithFormAudioProcessorEditor'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(504,3): error C2065: 'lowFilter': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(505,3): error C2065: 'highFilter': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(507,3): error C2065: 'lowFilter': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(508,3): error C2065: 'highFilter': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.cpp(568,5): error C2065: 'editorWaveformHistory': undeclared identifier [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_nuclear\WraithForm.vcxproj]

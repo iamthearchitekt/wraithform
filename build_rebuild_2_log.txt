@@ -1,0 +1,31 @@
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Checking File Globs
+  WraithForm_rc_lib.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm_rc_lib.dir\Release\WraithForm_rc_lib.lib
+  PluginProcessor.cpp
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(56,13): error C2039: 'GLuint': is not a member of 'juce::gl' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  PluginEditor.cpp
+  (compiling source file '../Source/PluginProcessor.cpp')
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\_deps\juce-src\modules\juce_opengl\opengl\juce_gl.h(214,11):
+      see declaration of 'juce::gl'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(90,13): error C2039: 'GLuint': is not a member of 'juce::gl' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginProcessor.cpp')
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\_deps\juce-src\modules\juce_opengl\opengl\juce_gl.h(214,11):
+      see declaration of 'juce::gl'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(56,13): error C2039: 'GLuint': is not a member of 'juce::gl' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\_deps\juce-src\modules\juce_opengl\opengl\juce_gl.h(214,11):
+      see declaration of 'juce::gl'
+  
+C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\Source\PluginEditor.h(90,13): error C2039: 'GLuint': is not a member of 'juce::gl' [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\WraithForm.vcxproj]
+  (compiling source file '../Source/PluginEditor.cpp')
+      C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraith\_deps\juce-src\modules\juce_opengl\opengl\juce_gl.h(214,11):
+      see declaration of 'juce::gl'
+  
+  juce_audio_processors.cpp
+  juce_gui_extra.cpp
+  juce_gui_basics.cpp
+  juce_graphics.cpp
+  juce_graphics_Harfbuzz.cpp

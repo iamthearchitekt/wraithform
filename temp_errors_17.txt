@@ -1,0 +1,426 @@
+
+  CMake Error at _deps/juce
+-src/extras/Build/CMake/cop
+yDir.cmake:45 (file):
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+The command "setlocal [C:\U
+sers\archi\.gemini\antigrav
+ity\scratch\ClosedHoodVisua
+lizer\build_wraith\WraithFo
+rm_VST3.vcxproj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+"C:\Program 
+Files\Microsoft Visual Stud
+io\2022\Community\Common7\I
+DE\CommonExtensions\Microso
+ft\CMake\CMake\bin\cmake.ex
+e" -E echo "removing 
+moduleinfo.json" [C:\Users\
+archi\.gemini\antigravity\s
+cratch\ClosedHoodVisualizer
+\build_wraith\WraithForm_VS
+T3.vcxproj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+if %errorlevel% neq 0 goto 
+:cmEnd [C:\Users\archi\.gem
+ini\antigravity\scratch\Clo
+sedHoodVisualizer\build_wra
+ith\WraithForm_VST3.vcxproj
+]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+"C:\Program 
+Files\Microsoft Visual Stud
+io\2022\Community\Common7\I
+DE\CommonExtensions\Microso
+ft\CMake\CMake\bin\cmake.ex
+e" -E remove -f C:/Users/ar
+chi/.gemini/antigravity/scr
+atch/ClosedHoodVisualizer/b
+uild_wraith/WraithForm_arte
+facts/Release/VST3/WraithFo
+rm.vst3/Contents/moduleinfo
+.json C:/Users/archi/.gemin
+i/antigravity/scratch/Close
+dHoodVisualizer/build_wrait
+h/WraithForm_artefacts/Rele
+ase/VST3/WraithForm.vst3/Co
+ntents/Resources/moduleinfo
+.json [C:\Users\archi\.gemi
+ni\antigravity\scratch\Clos
+edHoodVisualizer\build_wrai
+th\WraithForm_VST3.vcxproj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+if %errorlevel% neq 0 goto 
+:cmEnd [C:\Users\archi\.gem
+ini\antigravity\scratch\Clo
+sedHoodVisualizer\build_wra
+ith\WraithForm_VST3.vcxproj
+]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+:cmEnd [C:\Users\archi\.gem
+ini\antigravity\scratch\Clo
+sedHoodVisualizer\build_wra
+ith\WraithForm_VST3.vcxproj
+]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+endlocal & call 
+:cmErrorLevel %errorlevel% 
+& goto :cmDone [C:\Users\ar
+chi\.gemini\antigravity\scr
+atch\ClosedHoodVisualizer\b
+uild_wraith\WraithForm_VST3
+.vcxproj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+:cmErrorLevel [C:\Users\arc
+hi\.gemini\antigravity\scra
+tch\ClosedHoodVisualizer\bu
+ild_wraith\WraithForm_VST3.
+vcxproj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+exit /b %1 [C:\Users\archi\
+.gemini\antigravity\scratch
+\ClosedHoodVisualizer\build
+_wraith\WraithForm_VST3.vcx
+proj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+:cmDone [C:\Users\archi\.ge
+mini\antigravity\scratch\Cl
+osedHoodVisualizer\build_wr
+aith\WraithForm_VST3.vcxpro
+j]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+if %errorlevel% neq 0 goto 
+:VCEnd [C:\Users\archi\.gem
+ini\antigravity\scratch\Clo
+sedHoodVisualizer\build_wra
+ith\WraithForm_VST3.vcxproj
+]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+setlocal [C:\Users\archi\.g
+emini\antigravity\scratch\C
+losedHoodVisualizer\build_w
+raith\WraithForm_VST3.vcxpr
+oj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+"C:\Program 
+Files\Microsoft Visual Stud
+io\2022\Community\Common7\I
+DE\CommonExtensions\Microso
+ft\CMake\CMake\bin\cmake.ex
+e" -E echo "creating C:/Use
+rs/archi/.gemini/antigravit
+y/scratch/ClosedHoodVisuali
+zer/build_wraith/WraithForm
+_artefacts/Release/VST3/Wra
+ithForm.vst3" [C:\Users\arc
+hi\.gemini\antigravity\scra
+tch\ClosedHoodVisualizer\bu
+ild_wraith\WraithForm_VST3.
+vcxproj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+if %errorlevel% neq 0 goto 
+:cmEnd [C:\Users\archi\.gem
+ini\antigravity\scratch\Clo
+sedHoodVisualizer\build_wra
+ith\WraithForm_VST3.vcxproj
+]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+"C:\Program 
+Files\Microsoft Visual Stud
+io\2022\Community\Common7\I
+DE\CommonExtensions\Microso
+ft\CMake\CMake\bin\cmake.ex
+e" -E make_directory C:/Use
+rs/archi/.gemini/antigravit
+y/scratch/ClosedHoodVisuali
+zer/build_wraith/WraithForm
+_artefacts/Release/VST3/Wra
+ithForm.vst3/Contents/Resou
+rces [C:\Users\archi\.gemin
+i\antigravity\scratch\Close
+dHoodVisualizer\build_wrait
+h\WraithForm_VST3.vcxproj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+if %errorlevel% neq 0 goto 
+:cmEnd [C:\Users\archi\.gem
+ini\antigravity\scratch\Clo
+sedHoodVisualizer\build_wra
+ith\WraithForm_VST3.vcxproj
+]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: Re
+lease\WraithForm_vst3_helpe
+r.exe > C:/Users/archi/.gem
+ini/antigravity/scratch/Clo
+sedHoodVisualizer/build_wra
+ith/WraithForm_artefacts/Re
+lease/VST3/WraithForm.vst3/
+Contents/Resources/modulein
+fo.json [C:\Users\archi\.ge
+mini\antigravity\scratch\Cl
+osedHoodVisualizer\build_wr
+aith\WraithForm_VST3.vcxpro
+j]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+if %errorlevel% neq 0 goto 
+:cmEnd [C:\Users\archi\.gem
+ini\antigravity\scratch\Clo
+sedHoodVisualizer\build_wra
+ith\WraithForm_VST3.vcxproj
+]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+:cmEnd [C:\Users\archi\.gem
+ini\antigravity\scratch\Clo
+sedHoodVisualizer\build_wra
+ith\WraithForm_VST3.vcxproj
+]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+endlocal & call 
+:cmErrorLevel %errorlevel% 
+& goto :cmDone [C:\Users\ar
+chi\.gemini\antigravity\scr
+atch\ClosedHoodVisualizer\b
+uild_wraith\WraithForm_VST3
+.vcxproj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+:cmErrorLevel [C:\Users\arc
+hi\.gemini\antigravity\scra
+tch\ClosedHoodVisualizer\bu
+ild_wraith\WraithForm_VST3.
+vcxproj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+exit /b %1 [C:\Users\archi\
+.gemini\antigravity\scratch
+\ClosedHoodVisualizer\build
+_wraith\WraithForm_VST3.vcx
+proj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+:cmDone [C:\Users\archi\.ge
+mini\antigravity\scratch\Cl
+osedHoodVisualizer\build_wr
+aith\WraithForm_VST3.vcxpro
+j]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+if %errorlevel% neq 0 goto 
+:VCEnd [C:\Users\archi\.gem
+ini\antigravity\scratch\Clo
+sedHoodVisualizer\build_wra
+ith\WraithForm_VST3.vcxproj
+]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+setlocal [C:\Users\archi\.g
+emini\antigravity\scratch\C
+losedHoodVisualizer\build_w
+raith\WraithForm_VST3.vcxpr
+oj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+"C:\Program 
+Files\Microsoft Visual Stud
+io\2022\Community\Common7\I
+DE\CommonExtensions\Microso
+ft\CMake\CMake\bin\cmake.ex
+e" -Dsrc=C:/Users/archi/.ge
+mini/antigravity/scratch/Cl
+osedHoodVisualizer/build_wr
+aith/WraithForm_artefacts/R
+elease/VST3/WraithForm.vst3
+ "-Ddest=C:\Program 
+Files\Common Files/VST3" 
+-P C:/Users/archi/.gemini/a
+ntigravity/scratch/ClosedHo
+odVisualizer/build_wraith/_
+deps/juce-src/extras/Build/
+CMake/copyDir.cmake [C:\Use
+rs\archi\.gemini\antigravit
+y\scratch\ClosedHoodVisuali
+zer\build_wraith\WraithForm
+_VST3.vcxproj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+if %errorlevel% neq 0 goto 
+:cmEnd [C:\Users\archi\.gem
+ini\antigravity\scratch\Clo
+sedHoodVisualizer\build_wra
+ith\WraithForm_VST3.vcxproj
+]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+:cmEnd [C:\Users\archi\.gem
+ini\antigravity\scratch\Clo
+sedHoodVisualizer\build_wra
+ith\WraithForm_VST3.vcxproj
+]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+endlocal & call 
+:cmErrorLevel %errorlevel% 
+& goto :cmDone [C:\Users\ar
+chi\.gemini\antigravity\scr
+atch\ClosedHoodVisualizer\b
+uild_wraith\WraithForm_VST3
+.vcxproj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+:cmErrorLevel [C:\Users\arc
+hi\.gemini\antigravity\scra
+tch\ClosedHoodVisualizer\bu
+ild_wraith\WraithForm_VST3.
+vcxproj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+exit /b %1 [C:\Users\archi\
+.gemini\antigravity\scratch
+\ClosedHoodVisualizer\build
+_wraith\WraithForm_VST3.vcx
+proj]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+:cmDone [C:\Users\archi\.ge
+mini\antigravity\scratch\Cl
+osedHoodVisualizer\build_wr
+aith\WraithForm_VST3.vcxpro
+j]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+if %errorlevel% neq 0 goto 
+:VCEnd [C:\Users\archi\.gem
+ini\antigravity\scratch\Clo
+sedHoodVisualizer\build_wra
+ith\WraithForm_VST3.vcxproj
+]
+C:\Program Files\Microsoft 
+Visual Studio\2022\Communit
+y\MSBuild\Microsoft\VC\v170
+\Microsoft.CppCommon.target
+s(166,5): error MSB3073: 
+:VCEnd" exited with code 
+1. [C:\Users\archi\.gemini\
+antigravity\scratch\ClosedH
+oodVisualizer\build_wraith\
+WraithForm_VST3.vcxproj]
+
+
