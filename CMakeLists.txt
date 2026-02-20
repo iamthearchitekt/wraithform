@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(WraithForm VERSION 1.0.7)
+project(WraithForm VERSION 1.0.8)
 
 # JUCE Setup using FetchContent
 include(FetchContent)
@@ -60,16 +60,15 @@ target_link_libraries(WraithForm PRIVATE
 
 # 1. Install Rules
 # ----------------
-# Standalone App -> bin/ (Program Files/WraithForm/bin)
+# Standalone App -> Root (Program Files/WraithForm)
 install(TARGETS WraithForm_Standalone
-    DESTINATION bin
+    DESTINATION .
     COMPONENT Standalone
 )
 
-# VST3 Plugin -> Install to application directory to avoid permission issues during build.
-# The installer will package this, and the user can move it or we can let NSIS handle it later.
+# VST3 Plugin -> Install to root of installation directory.
 install(TARGETS WraithForm_VST3
-    DESTINATION VST3
+    DESTINATION .
     COMPONENT VST3
 )
 
@@ -124,27 +123,21 @@ string(REPLACE "\\" "\\\\" ESCAPED_ICON_ICO "${NATIVE_ICON_ICO}")
 set(CPACK_NSIS_MUI_ICON "${ESCAPED_ICON_ICO}")
 set(CPACK_NSIS_MUI_UNIICON "${ESCAPED_ICON_ICO}")
 # Shortcut syntax: "ExecutableName" "Shortcut Name"
-set(CPACK_PACKAGE_EXECUTABLES "WraithForm_Standalone" "WraithForm")
-set(CPACK_CREATE_DESKTOP_LINKS "WraithForm_Standalone")
+set(CPACK_PACKAGE_EXECUTABLES "WraithForm" "WraithForm")
+set(CPACK_CREATE_DESKTOP_LINKS "WraithForm")
 set(CPACK_NSIS_MODIFY_PATH OFF)
 
 # 4. Custom Install Steps (VST3 Placement)
 # ----------------------------------------
-# We need to copy the VST3 bundle to the system VST3 folder
-# VST3 is a Directory (Bundle), so we use /r for recursive copy if needed, or ensuring structure.
-# But "CopyFiles" in NSIS is simple file copy. "CopyFiles /SILENT"
-# Better to use specific NSIS script injection.
-# This copies from INSTDIR/VST3/WraithForm.vst3 to $COMMONFILES64/VST3/WraithForm.vst3
-
 set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
     SetOutPath \\\"$COMMONFILES64\\\\VST3\\\"
-    CopyFiles /SILENT /FILESONLY \\\"$INSTDIR\\\\VST3\\\\WraithForm.vst3\\\" \\\"$COMMONFILES64\\\\VST3\\\\WraithForm.vst3\\\"
+    CopyFiles /SILENT \\\"$INSTDIR\\\\WraithForm.vst3\\\" \\\"$COMMONFILES64\\\\VST3\\\\WraithForm.vst3\\\"
 ")
 
 # Also ensure valid uninstall
 set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
     Delete \\\"$COMMONFILES64\\\\VST3\\\\WraithForm.vst3\\\"
-    RMDir \\\"$COMMONFILES64\\\\VST3\\\\WraithForm.vst3\\\"
+    RMDir /r \\\"$COMMONFILES64\\\\VST3\\\\WraithForm.vst3\\\"
 ")
 
 include(CPack)
