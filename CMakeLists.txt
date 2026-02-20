@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(WraithForm VERSION 1.0.5)
+project(WraithForm VERSION 1.0.6)
 
 # JUCE Setup using FetchContent
 include(FetchContent)
@@ -25,7 +25,6 @@ juce_add_plugin(WraithForm
     PLUGIN_CODE WrFm
     FORMATS VST3 Standalone
     PRODUCT_NAME "WraithForm"
-    ICON_BIG "Source/icon.png"
 )
 
 # Source Files
@@ -39,6 +38,10 @@ target_sources(WraithForm PRIVATE
     Source/SpectrogramShader.h
     Source/CircularOscilloscopeShader.h
 )
+
+if(MSVC)
+    target_sources(WraithForm PRIVATE Source/WraithForm.rc)
+endif()
 
 # Compile Definitions & Linker Flags
 target_compile_definitions(WraithForm PUBLIC
@@ -117,8 +120,8 @@ set(CPACK_COMPONENT_VST3_DESCRIPTION "The VST3 plugin for DAWs (install to Syste
 
 # 3. Icon handling (NSIS)
 # ----------------------
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/Source/icon.ico" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-file(TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/icon.ico" NATIVE_ICON_ICO)
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/Source/app_icon.ico" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+file(TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/app_icon.ico" NATIVE_ICON_ICO)
 string(REPLACE "\\" "\\\\" ESCAPED_ICON_ICO "${NATIVE_ICON_ICO}")
 
 set(CPACK_NSIS_MUI_ICON "${ESCAPED_ICON_ICO}")
