@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(WraithForm VERSION 1.0.3)
+project(WraithForm VERSION 1.0.4)
 
 # JUCE Setup using FetchContent
 include(FetchContent)
@@ -112,12 +112,16 @@ set(CPACK_COMPONENT_STANDALONE_DESCRIPTION "The standalone executable version of
 set(CPACK_COMPONENT_VST3_DISPLAY_NAME "VST3 Plugin")
 set(CPACK_COMPONENT_VST3_DESCRIPTION "The VST3 plugin for DAWs (install to System VST3 folder manually if needed).")
 
-# 3. Shortcuts (Start Menu & Desktop)
-# -----------------------------------
-# Syntax: "ExecutableName" "Shortcut Name"
-set(CPACK_PACKAGE_EXECUTABLES "WraithForm_Standalone" "WraithForm")
+# 3. Icon handling (NSIS)
+# ----------------------
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/Source/icon.ico" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+file(TO_NATIVE_PATH "${CMAKE_CURRENT_BINARY_DIR}/icon.ico" NATIVE_ICON_ICO)
+string(REPLACE "\\" "\\\\" ESCAPED_ICON_ICO "${NATIVE_ICON_ICO}")
 
-# Create Desktop Shortcut
+set(CPACK_NSIS_MUI_ICON "${ESCAPED_ICON_ICO}")
+set(CPACK_NSIS_MUI_UNIICON "${ESCAPED_ICON_ICO}")
+# Shortcut syntax: "ExecutableName" "Shortcut Name"
+set(CPACK_PACKAGE_EXECUTABLES "WraithForm_Standalone" "WraithForm")
 set(CPACK_CREATE_DESKTOP_LINKS "WraithForm_Standalone")
 set(CPACK_NSIS_MODIFY_PATH OFF)
 
