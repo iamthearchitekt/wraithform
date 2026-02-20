@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(WraithForm VERSION 1.0.2)
+project(WraithForm VERSION 1.0.3)
 
 # JUCE Setup using FetchContent
 include(FetchContent)
@@ -119,7 +119,7 @@ set(CPACK_PACKAGE_EXECUTABLES "WraithForm_Standalone" "WraithForm")
 
 # Create Desktop Shortcut
 set(CPACK_CREATE_DESKTOP_LINKS "WraithForm_Standalone")
-set(CPACK_NSIS_MODIFY_PATH ON)
+set(CPACK_NSIS_MODIFY_PATH OFF)
 
 # 4. Custom Install Steps (VST3 Placement)
 # ----------------------------------------
