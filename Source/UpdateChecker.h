@@ -20,18 +20,15 @@ public:
     juce::URL url("https://api.github.com/repos/iamthearchitekt/wraithform/"
                   "releases/latest");
 
-    // Add a User-Agent header which GitHub requires
-    juce::StringPairArray headers;
-    headers.set("User-Agent", "WraithForm-App");
-
     auto options =
         juce::URL::InputStreamOptions(juce::URL::ParameterHandling::inAddress)
-            .withExtraHeaders(headers.toString())
+            .withExtraHeaders("User-Agent: WraithForm-App\r\n")
             .withConnectionTimeoutMs(5000);
 
-    if (auto stream = url.createInputStream(options)) {
-      auto response = stream->readEntireStreamAsString();
-      auto json = juce::JSON::parse(response);
+    std::unique_ptr<juce::InputStream> stream(url.createInputStream(options));
+    if (stream != nullptr) {
+      juce::String response = stream->readEntireStreamAsString();
+      juce::var json = juce::JSON::parse(response);
 
       if (json.isObject()) {
         juce::String latestTag = json.getProperty("tag_name", "").toString();
@@ -42,7 +39,7 @@ public:
                 .toString();
 
         if (latestTag.isNotEmpty()) {
-          const juce::String currentVersion = ProjectInfo::versionString;
+          const juce::String currentVersion = JucePlugin_VersionString;
 
           // Simple version comparison (e.g., "1.0.4" vs "1.0.5")
           // We strip "v" if present

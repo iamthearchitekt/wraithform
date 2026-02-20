@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(WraithForm VERSION 1.0.6)
+project(WraithForm VERSION 1.0.7)
 
 # JUCE Setup using FetchContent
 include(FetchContent)
@@ -25,6 +25,7 @@ juce_add_plugin(WraithForm
     PLUGIN_CODE WrFm
     FORMATS VST3 Standalone
     PRODUCT_NAME "WraithForm"
+    ICON_BIG "Source/icon.png"
 )
 
 # Source Files
@@ -38,10 +39,6 @@ target_sources(WraithForm PRIVATE
     Source/SpectrogramShader.h
     Source/CircularOscilloscopeShader.h
 )
-
-if(MSVC)
-    target_sources(WraithForm PRIVATE Source/WraithForm.rc)
-endif()
 
 # Compile Definitions & Linker Flags
 target_compile_definitions(WraithForm PUBLIC
