@@ -17,6 +17,9 @@ WraithFormAudioProcessor::WraithFormAudioProcessor()
   // Setup True Peak Oversampling (4x)
   oversampler = std::make_unique<juce::dsp::Oversampling<float>>(
       2, 2, juce::dsp::Oversampling<float>::filterHalfBandPolyphaseIIR);
+
+  // Start update check
+  updateChecker.startThread();
 }
 
 WraithFormAudioProcessor::~WraithFormAudioProcessor() {}

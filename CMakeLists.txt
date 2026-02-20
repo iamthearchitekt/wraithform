@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(WraithForm VERSION 1.0.4)
+project(WraithForm VERSION 1.0.5)
 
 # JUCE Setup using FetchContent
 include(FetchContent)
@@ -13,7 +13,8 @@ FetchContent_MakeAvailable(juce)
 
 # Plugin Format Setup
 juce_add_plugin(WraithForm
-    COMPANY_NAME "Antigravity"
+    COMPANY_NAME "Arcane Synthesis"
+    BUNDLE_ID "com.arcanesynthesis.wraithform"
     IS_SYNTH FALSE
     NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE
@@ -74,7 +75,8 @@ install(TARGETS WraithForm_VST3
 
 # 2. CPack Configuration
 # ----------------------
-set(CPACK_PACKAGE_VENDOR "Antigravity")
+set(CPACK_PACKAGE_VENDOR "Arcane Synthesis")
+set(CPACK_PACKAGE_CONTACT "support@arcanesynthesis.com")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "WraithForm Audio Visualizer")
 set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "WraithForm")
@@ -82,8 +84,9 @@ set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/README.md") # Use R
 
 # NSIS Specifics
 set(CPACK_GENERATOR "NSIS")
-set(CPACK_NSIS_DISPLAY_NAME "WraithForm v${PROJECT_VERSION}")
+set(CPACK_NSIS_DISPLAY_NAME "WraithForm")
 set(CPACK_NSIS_PACKAGE_NAME "WraithForm")
+set(CPACK_NSIS_HELP_LINK "https://github.com/iamthearchitekt/wraithform")
 set(CPACK_NSIS_BRANDING_TEXT "WraithForm - High Performance Visualizer")
 
 # Only package our components (Exclude 'Unspecified' which contains all JUCE sources)

@@ -10,7 +10,8 @@
 
 //==============================================================================
 class WraithFormAudioProcessorEditor : public juce::AudioProcessorEditor,
-                                       public juce::OpenGLRenderer {
+                                       public juce::OpenGLRenderer,
+                                       public juce::Timer {
 public:
   WraithFormAudioProcessorEditor(WraithFormAudioProcessor &);
   ~WraithFormAudioProcessorEditor() override;
@@ -23,6 +24,8 @@ public:
   void newOpenGLContextCreated() override;
   void renderOpenGL() override;
   void openGLContextClosing() override;
+
+  void timerCallback() override;
 
   // Interaction
   void mouseDown(const juce::MouseEvent &event) override;
@@ -152,6 +155,11 @@ private:
   };
 
   std::vector<std::unique_ptr<DetachedWindow>> detachedWindows;
+
+  // Update Notification UI
+  juce::TextButton updateButton{"Update Available!"};
+  juce::Rectangle<int> updateBtnRect;
+  bool showUpdateNotification = false;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WraithFormAudioProcessorEditor)
 };

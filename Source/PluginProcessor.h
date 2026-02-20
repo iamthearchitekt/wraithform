@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RingBuffer.h"
+#include "UpdateChecker.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_audio_utils/juce_audio_utils.h>
 #include <juce_dsp/juce_dsp.h>
@@ -64,6 +65,12 @@ public:
   std::atomic<float> lufsShortTerm{-100.0f};
   std::atomic<float> lufsIntegrated{-100.0f};
   std::atomic<float> truePeakL{-100.0f}, truePeakR{-100.0f};
+
+  // Update Notification
+  UpdateChecker updateChecker;
+  UpdateChecker::UpdateInfo getLatestUpdateInfo() {
+    return updateChecker.getLatestInfo();
+  }
 
 private:
   // K-Weighting for LUFS

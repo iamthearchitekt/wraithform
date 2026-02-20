@@ -154,6 +154,23 @@ WraithFormAudioProcessorEditor::WraithFormAudioProcessorEditor(
   openGLContext.attachTo(*this);
   openGLContext.setContinuousRepainting(true); // Attempt 60FPS or generic VSync
 
+  // Setup Update Button
+  addAndMakeVisible(updateButton);
+  updateButton.setButtonText("Update Available!");
+  updateButton.setColour(juce::TextButton::buttonColourId,
+                         juce::Colour(0xFF4CAF50)); // Nice green
+  updateButton.setColour(juce::TextButton::textColourOffId,
+                         juce::Colours::white);
+  updateButton.setVisible(false);
+  updateButton.onClick = [this] {
+    auto info = audioProcessor.getLatestUpdateInfo();
+    if (info.downloadUrl.isNotEmpty())
+      juce::URL(info.downloadUrl).launchInDefaultBrowser();
+  };
+
+  // Start checking for updates every 10 seconds (after initial delay)
+  startTimer(10000);
+
   // Audio Buffers setup
   int initialSize = 1 << (int)FFTSize::AllRound;
   textureData.resize(textureSize, 0.0f);
@@ -202,6 +219,18 @@ WraithFormAudioProcessorEditor::WraithFormAudioProcessorEditor(
   }
 
   // Fallback: If Base64 fails (unlikely), we just have no splash.
+  // logToDesktop("Constructor: Splash Valid? " +
+  // juce::String(splashImage.isValid() ? "YES" : "NO"));
+}
+
+void WraithFormAudioProcessorEditor::timerCallback() {
+  auto info = audioProcessor.getLatestUpdateInfo();
+
+  if (info.updateAvailable && !showUpdateNotification) {
+    showUpdateNotification = true;
+    updateButton.setVisible(true);
+    resized(); // Re-layout to show button
+  }
 }
 
 WraithFormAudioProcessorEditor::~WraithFormAudioProcessorEditor() {}
@@ -213,7 +242,15 @@ void WraithFormAudioProcessorEditor::paint(juce::Graphics &g) {
   // Allow OpenGL to clear the screen
 }
 
-void WraithFormAudioProcessorEditor::resized() {}
+void WraithFormAudioProcessorEditor::resized() {
+  auto area = getLocalBounds();
+
+  // Position Update Button at the top, centered
+  if (showUpdateNotification) {
+    updateBtnRect = area.removeFromTop(40).withSizeKeepingCentre(200, 30);
+    updateButton.setBounds(updateBtnRect);
+  }
+}
 
 void WraithFormAudioProcessorEditor::mouseDown(const juce::MouseEvent &e) {
   // Sidebar toggle on right edge (40px)
