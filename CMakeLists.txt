@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(WraithForm VERSION 1.0.0)
+project(WraithForm VERSION 1.0.1)
 
 # JUCE Setup using FetchContent
 include(FetchContent)
@@ -112,4 +112,34 @@ set(CPACK_COMPONENT_STANDALONE_DESCRIPTION "The standalone executable version of
 set(CPACK_COMPONENT_VST3_DISPLAY_NAME "VST3 Plugin")
 set(CPACK_COMPONENT_VST3_DESCRIPTION "The VST3 plugin for DAWs (install to System VST3 folder manually if needed).")
 
-include(CPack)
+# 3. Shortcuts (Start Menu & Desktop)
+# -----------------------------------
+# Syntax: "ExecutableName" "Shortcut Name"
+set(CPACK_PACKAGE_EXECUTABLES "WraithForm_Standalone" "WraithForm")
+
+# Create Desktop Shortcut
+set(CPACK_CREATE_DESKTOP_LINKS "WraithForm_Standalone")
+set(CPACK_NSIS_MODIFY_PATH ON)
+
+# Create Desktop Shortcut
+set(CPACK_CREATE_DESKTOP_LINKS "WraithForm_Standalone")
+set(CPACK_NSIS_MODIFY_PATH ON)
+
+# 4. Custom Install Steps (VST3 Placement)
+# ----------------------------------------
+# We need to copy the VST3 bundle to the system VST3 folder
+# VST3 is a Directory (Bundle), so we use /r for recursive copy if needed, or ensuring structure.
+# But "CopyFiles" in NSIS is simple file copy. "CopyFiles /SILENT"
+# Better to use specific NSIS script injection.
+# This copies from INSTDIR/VST3/WraithForm.vst3 to $COMMONFILES64/VST3/WraithForm.vst3
+
+set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+    SetOutPath \\\"$COMMONFILES64\\\\VST3\\\"
+    CopyFiles /SILENT /FILESONLY \\\"$INSTDIR\\\\VST3\\\\WraithForm.vst3\\\" \\\"$COMMONFILES64\\\\VST3\\\\WraithForm.vst3\\\"
+")
+
+# Also ensure valid uninstall
+set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
+    Delete \\\"$COMMONFILES64\\\\VST3\\\\WraithForm.vst3\\\"
+    RMDir \\\"$COMMONFILES64\\\\VST3\\\\WraithForm.vst3\\\"
+")
