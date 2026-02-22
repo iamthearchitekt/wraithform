@@ -107,11 +107,13 @@ const static char *circularOscilloscopeFragmentShader = R"glsl(
         float g = glow * (0.6 + 0.8 * energy);
 
         float intensity = line;
-        intensity += innerGlow * (0.25 * g);
-        intensity += outerGlow * (0.10 * g);
+        intensity += innerGlow * (0.15 * g);
+        intensity += outerGlow * (0.05 * g);
 
         intensity = clamp(intensity, 0.0, 1.0);
 
+        intensity = clamp(intensity, 0.0, 1.0);
+ 
         // Background Ghostly Glow (Center Pulsing)
         // Calculate average energy
         float pulseEnergy = (sampleWave(0.1) + sampleWave(0.5) + sampleWave(0.9)) / 3.0;

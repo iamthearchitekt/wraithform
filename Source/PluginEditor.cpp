@@ -319,7 +319,7 @@ void WraithFormAudioProcessorEditor::renderMeters() {
 
   // Background
   glScissor(x_start, 0, sidebarWidth, h);
-  glClearColor(0.01f, 0.01f, 0.05f, 0.9f); // Deep Sidebar Blue
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Pure Black Sidebar
   glClear(GL_COLOR_BUFFER_BIT);
 
   // Meter Data from Processor
@@ -356,12 +356,12 @@ void WraithFormAudioProcessorEditor::renderMeters() {
 
   auto drawMeter = [&](int x_off, float val, bool isRMS) {
     int barH = (int)(val * meterHeight);
-    // GL bottom = 100 logical pixels.
+    // GL bottom = 100 logical pixels
     glScissor(x_start + x_off, (int)(100 * scale), barW, barH);
     if (isRMS)
-      glClearColor(0.2f, 0.35f, 0.5f, 0.9f); // Desaturated Steel Blue
+      glClearColor(0.0f, 0.5f, 0.6f, 0.9f); // Deeper Cyan (RMS)
     else
-      glClearColor(0.4f, 0.6f, 0.7f, 1.0f); // Desaturated Pale Cyan
+      glClearColor(0.0f, 0.8f, 0.9f, 1.0f); // Vibrant Cyan (Peak)
     glClear(GL_COLOR_BUFFER_BIT);
   };
 
@@ -441,7 +441,7 @@ void WraithFormAudioProcessorEditor::renderLoudnessDashboard() {
   // Background Bar (Top)
   glEnable(GL_SCISSOR_TEST);
   glScissor(0, (int)((h - 55) * scale), (int)(w * scale), (int)(55 * scale));
-  glClearColor(0.01f, 0.01f, 0.05f, 0.95f); // Deep dark
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Pure Black Dashboard
   glClear(GL_COLOR_BUFFER_BIT);
   glDisable(GL_SCISSOR_TEST);
 
@@ -571,6 +571,12 @@ void WraithFormAudioProcessorEditor::renderOpenGL() {
   // ALWAYS update audio data before rendering any mode
   updateAudioData();
 
+  // SIDEBAR ANIMATION (Self-driven without Timer)
+  if (isSideBarVisible && sideBarAnimation < 1.0f)
+    sideBarAnimation = std::min(1.0f, sideBarAnimation + 0.05f);
+  else if (!isSideBarVisible && sideBarAnimation > 0.0f)
+    sideBarAnimation = std::max(0.0f, sideBarAnimation - 0.05f);
+
   // Clear background to Black (CRITICAL FOR STARTUP GLITCH FIX)
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
@@ -625,7 +631,7 @@ void WraithFormAudioProcessorEditor::renderOpenGL() {
     // Background bar
     glScissor((int)(10 * scale), (int)(10 * scale), (int)((w - 20) * scale),
               (int)(5 * scale));
-    glClearColor(0.05f, 0.05f, 0.1f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Pure Black Phase Background
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Meter Fill

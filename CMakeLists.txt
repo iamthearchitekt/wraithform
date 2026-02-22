@@ -38,6 +38,7 @@ target_sources(WraithForm PRIVATE
     Source/VisualizerShader.h
     Source/SpectrogramShader.h
     Source/CircularOscilloscopeShader.h
+    Source/WraithForm.rc
 )
 
 # Compile Definitions & Linker Flags
@@ -60,9 +61,9 @@ target_link_libraries(WraithForm PRIVATE
 
 # 1. Install Rules
 # ----------------
-# Standalone App -> Root (Program Files/WraithForm)
+# Standalone App -> bin/ subfolder (where NSIS expects it for shortcuts)
 install(TARGETS WraithForm_Standalone
-    DESTINATION .
+    DESTINATION bin
     COMPONENT Standalone
 )
 
@@ -122,14 +123,20 @@ string(REPLACE "\\" "\\\\" ESCAPED_ICON_ICO "${NATIVE_ICON_ICO}")
 
 set(CPACK_NSIS_MUI_ICON "${ESCAPED_ICON_ICO}")
 set(CPACK_NSIS_MUI_UNIICON "${ESCAPED_ICON_ICO}")
-# Shortcut syntax: "ExecutableName" "Shortcut Name"
+# The value here must match the INSTALLED filename (WraithForm.exe), not the CMake target name
 set(CPACK_PACKAGE_EXECUTABLES "WraithForm" "WraithForm")
 set(CPACK_CREATE_DESKTOP_LINKS "WraithForm")
+# Ensure Start Menu shortcut shows the icon
+set(CPACK_NSIS_INSTALLED_ICON_NAME "WraithForm.exe")
 set(CPACK_NSIS_MODIFY_PATH OFF)
 
-# 4. Custom Install Steps (VST3 Placement)
-# ----------------------------------------
+# 4. Custom Install Steps (VST3 Placement & Clean Install)
+# -----------------------------------------------------------
 set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+    # Clean up old VST3 first to prevent discrepancies
+    Delete \\\"$COMMONFILES64\\\\VST3\\\\WraithForm.vst3\\\"
+    RMDir /r \\\"$COMMONFILES64\\\\VST3\\\\WraithForm.vst3\\\"
+    
     SetOutPath \\\"$COMMONFILES64\\\\VST3\\\"
     CopyFiles /SILENT \\\"$INSTDIR\\\\WraithForm.vst3\\\" \\\"$COMMONFILES64\\\\VST3\\\\WraithForm.vst3\\\"
 ")

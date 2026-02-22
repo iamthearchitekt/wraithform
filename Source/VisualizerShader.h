@@ -13,8 +13,8 @@ const static char *visualizerFragmentShader = R"glsl(
     const float thickness = 0.012;
     const float gain = 2.0;
     const float lowpass = 0.75;
-    const float glow = 0.6;
-    const float glowSize = 3.0;
+    const float glow = 0.5;
+    const float glowSize = 1.2;
     const float window = 0.018;
 
     // Ice Blue brand color (#D5FFFF)
@@ -71,25 +71,14 @@ const static char *visualizerFragmentShader = R"glsl(
         float g = glow * (0.6 + 0.8 * energy);
 
         float intensity = line;
-        intensity += innerGlow * (0.25 * g);
-        intensity += outerGlow * (0.10 * g);
+        intensity += innerGlow * (0.2 * g);
+        intensity += outerGlow * (0.05 * g);
 
         intensity = clamp(intensity, 0.0, 1.0);
 
-        // Background Ghostly Glow (Center Pulsing)
-        // Calculate average energy from a few points to drive the pulse
-        float pulseEnergy = (sampleWave(0.2) + sampleWave(0.5) + sampleWave(0.8)) / 3.0;
-        pulseEnergy = clamp(abs((pulseEnergy - 0.5) * 2.0), 0.0, 1.0);
+        intensity = clamp(intensity, 0.0, 1.0);
         
-        // Vertical distance from center (y=0.5)
-        float dCenter = abs(uv.y - 0.5);
-        
-        // Soft, wide glow
-        float bgGlow = 1.0 - smoothstep(0.0, 0.5 + 0.2 * pulseEnergy, dCenter);
-        // Make it subtle and ghostly
-        bgGlow *= 0.15 * (0.5 + 0.5 * pulseEnergy); 
-        
-        vec3 finalColor = glowColor * intensity + glowColor * bgGlow;
+        vec3 finalColor = glowColor * intensity;
 
         gl_FragColor = vec4(finalColor, 1.0);
     }
