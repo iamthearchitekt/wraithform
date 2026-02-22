@@ -1,0 +1,54 @@
+﻿CMake is re-running because C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/build_wraithform/CMakeFiles/generate.stamp is out-of-date.
+  the file 'C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt'
+  is newer than 'C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/build_wraithform/CMakeFiles/generate.stamp.depend'
+  result='-1'
+-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.
+-- Configuring juceaide
+-- Building juceaide
+-- Exporting juceaide
+-- Testing juceaide
+-- Finished setting up juceaide
+-- Configuring done (6.8s)
+-- Generating done (0.6s)
+-- Build files have been written to: C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/build_wraithform
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  Checking File Globs
+  WraithForm_rc_lib.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm_rc_lib.dir\Release\WraithForm_rc_lib.lib
+  WraithForm.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm_artefacts\Release\WraithForm_SharedCode.lib
+  WraithForm_vst3_helper.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\Release\WraithForm_vst3_helper.exe
+  WraithForm_VST3.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm_artefacts\Release\VST3\WraithForm.vst3\Contents\x86_64-win\WraithForm.vst3
+  removing moduleinfo.json
+  creating C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/build_wraithform/WraithForm_artefacts/Release/VST3/WraithForm.vst3
+  Building Custom Rule C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt
+CUSTOMBUILD : warning : Environment variable CMAKE_GENERATOR_PLATFORM will be ignored, because CMAKE_GENERATOR is not set. [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm_Standalone.vcxproj]
+  juce_audio_plugin_client_AAX.cpp
+  juce_audio_plugin_client_AAX_utils.cpp
+  juce_audio_plugin_client_ARA.cpp
+  juce_audio_plugin_client_LV2.cpp
+  juce_audio_plugin_client_Standalone.cpp
+  juce_audio_plugin_client_Unity.cpp
+  juce_audio_plugin_client_VST2.cpp
+  juce_audio_plugin_client_VST3.cpp
+  Generating Code...
+  WraithForm_Standalone.vcxproj -> C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\WraithForm_artefacts\Release\Standalone\WraithForm.exe
+  Building Custom Rule C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt
+CUSTOMBUILD : warning : Environment variable CMAKE_GENERATOR_PLATFORM will be ignored, because CMAKE_GENERATOR is not set. [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\ALL_BUILD.vcxproj]
+  1>
+EXEC : CPack error : Cannot find NSIS compiler makensis: likely it is not installed, or not in your PATH [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]
+EXEC : CPack error : Could not read NSIS registry value. This is usually caused by NSIS not being installed. Please install NSIS from http://nsis.sourceforge.net [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]
+EXEC : CPack error : Cannot initialize the generator NSIS [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: The command "setlocal [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: cd C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: if %errorlevel% neq 0 goto :cmEnd [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: C: [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: if %errorlevel% neq 0 goto :cmEnd [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cpack.exe" -C Release --config ./CPackConfig.cmake [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: if %errorlevel% neq 0 goto :cmEnd [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmEnd [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmErrorLevel [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: exit /b %1 [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmDone [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: if %errorlevel% neq 0 goto :VCEnd [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :VCEnd" exited with code 1. [C:\Users\archi\.gemini\antigravity\scratch\ClosedHoodVisualizer\build_wraithform\package.vcxproj]

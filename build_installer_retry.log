@@ -1,0 +1,17 @@
+﻿CMake is re-running because C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/build_wraithform/CMakeFiles/generate.stamp is out-of-date.
+  the file 'C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/CMakeLists.txt'
+  is newer than 'C:/Users/archi/.gemini/antigravity/scratch/ClosedHoodVisualizer/build_wraithform/CMakeFiles/generate.stamp.depend'
+  result='-1'
+cmake.exe : CMake Error at CMakeLists.txt:49:
+At line:1 char:152
++ ... lyContinue; & "C:\Program Files\Microsoft Visual Studio\2022\Communit ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (CMake Error at CMakeLists.txt:49::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  Parse error.  Expected a command name, got unquoted argument with text
+  "juce::juce_dsp".
+
+
+-- Configuring incomplete, errors occurred!
+CMake Configure step failed.  Build files cannot be regenerated correctly.

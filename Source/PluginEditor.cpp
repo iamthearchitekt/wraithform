@@ -143,33 +143,13 @@ WraithFormAudioProcessorEditor::WraithFormAudioProcessorEditor(
       (1 << (int)FFTSize::AllRound),
       juce::dsp::WindowingFunction<float>::blackmanHarris);
 
-  using namespace juce::gl;
-  // Make sure that before the constructor has finished, you've set the
-  // editor's size to whatever you need it to be.
-  setSize(1280, 720);
   setResizable(true, true);
+  setSize(1280, 720);
 
   // Setup OpenGL
   openGLContext.setRenderer(this);
   openGLContext.attachTo(*this);
   openGLContext.setContinuousRepainting(true); // Attempt 60FPS or generic VSync
-
-  // Setup Update Button
-  addAndMakeVisible(updateButton);
-  updateButton.setButtonText("Update Available!");
-  updateButton.setColour(juce::TextButton::buttonColourId,
-                         juce::Colour(0xFF4CAF50)); // Nice green
-  updateButton.setColour(juce::TextButton::textColourOffId,
-                         juce::Colours::white);
-  updateButton.setVisible(false);
-  updateButton.onClick = [this] {
-    auto info = audioProcessor.getLatestUpdateInfo();
-    if (info.downloadUrl.isNotEmpty())
-      juce::URL(info.downloadUrl).launchInDefaultBrowser();
-  };
-
-  // Start checking for updates every 10 seconds (after initial delay)
-  startTimer(10000);
 
   // Audio Buffers setup
   int initialSize = 1 << (int)FFTSize::AllRound;
@@ -223,16 +203,6 @@ WraithFormAudioProcessorEditor::WraithFormAudioProcessorEditor(
   // juce::String(splashImage.isValid() ? "YES" : "NO"));
 }
 
-void WraithFormAudioProcessorEditor::timerCallback() {
-  auto info = audioProcessor.getLatestUpdateInfo();
-
-  if (info.updateAvailable && !showUpdateNotification) {
-    showUpdateNotification = true;
-    updateButton.setVisible(true);
-    resized(); // Re-layout to show button
-  }
-}
-
 WraithFormAudioProcessorEditor::~WraithFormAudioProcessorEditor() {}
 
 //==============================================================================
@@ -243,13 +213,7 @@ void WraithFormAudioProcessorEditor::paint(juce::Graphics &g) {
 }
 
 void WraithFormAudioProcessorEditor::resized() {
-  auto area = getLocalBounds();
-
-  // Position Update Button at the top, centered
-  if (showUpdateNotification) {
-    updateBtnRect = area.removeFromTop(40).withSizeKeepingCentre(200, 30);
-    updateButton.setBounds(updateBtnRect);
-  }
+  // Add layout logic here if needed
 }
 
 void WraithFormAudioProcessorEditor::mouseDown(const juce::MouseEvent &e) {
@@ -319,33 +283,7 @@ void WraithFormAudioProcessorEditor::toggleDetachedWindows() {
   if (numDetachedWindows.load() > 0) {
     detachedWindows.clear();
     numDetachedWindows = 0;
-    return;
-    if (phaseShader == nullptr) {
-      phaseShader.reset(new juce::OpenGLShaderProgram(openGLContext));
-      if (phaseShader->addVertexShader(PhaseCorrelationShader::vertexShader) &&
-          phaseShader->addFragmentShader(
-              PhaseCorrelationShader::fragmentShader) &&
-          phaseShader->link()) {
-        // Linked
-      } else {
-        logToDesktop("Phase Shader Error: " + phaseShader->getLastError());
-      }
-    }
   }
-
-  // Create windows for each mode
-  detachedWindows.push_back(std::make_unique<DetachedWindow>(
-      "Oscilloscope", *this, VisualizerMode::Oscilloscope));
-  numDetachedWindows++;
-  detachedWindows.push_back(std::make_unique<DetachedWindow>(
-      "Circular", *this, VisualizerMode::Circular));
-  numDetachedWindows++;
-  detachedWindows.push_back(std::make_unique<DetachedWindow>(
-      "Serato", *this, VisualizerMode::Serato));
-  numDetachedWindows++;
-  detachedWindows.push_back(std::make_unique<DetachedWindow>(
-      "Spectrogram", *this, VisualizerMode::Spectrogram));
-  numDetachedWindows++;
 }
 
 int WraithFormAudioProcessorEditor::findTriggerPoint(
@@ -381,7 +319,7 @@ void WraithFormAudioProcessorEditor::renderMeters() {
 
   // Background
   glScissor(x_start, 0, sidebarWidth, h);
-  glClearColor(0.01f, 0.01f, 0.05f, 0.8f);
+  glClearColor(0.01f, 0.01f, 0.05f, 0.9f); // Deep Sidebar Blue
   glClear(GL_COLOR_BUFFER_BIT);
 
   // Meter Data from Processor
@@ -412,14 +350,14 @@ void WraithFormAudioProcessorEditor::renderMeters() {
 
   int barGap = (int)(10 * scale);
   int barW = (int)(6 * scale);
-  int meterHeight =
-      (int)(h - 140 * scale); // Reduced height to fit raised start
+  // Total logical height H. Dashboard is 55 high. Readouts are ~100 high at
+  // bottom. Meters logical height = H - 55 - 100 = H - 155.
+  int meterHeight = (int)((getHeight() - 170) * scale);
 
   auto drawMeter = [&](int x_off, float val, bool isRMS) {
     int barH = (int)(val * meterHeight);
-    // Raise base to 110 to clear text at bottom (text occupies up to ~90 from
-    // bottom)
-    glScissor(x_start + x_off, (int)(110 * scale), barW, barH);
+    // GL bottom = 100 logical pixels.
+    glScissor(x_start + x_off, (int)(100 * scale), barW, barH);
     if (isRMS)
       glClearColor(0.2f, 0.35f, 0.5f, 0.9f); // Desaturated Steel Blue
     else
@@ -434,67 +372,61 @@ void WraithFormAudioProcessorEditor::renderMeters() {
 
   // LUFS Bar
   int lufs_off = barGap * 5;
-  int lufs_H = (int)(normLUFS * meterHeight);
-  glScissor(x_start + lufs_off, (int)(110 * scale), barW * 2, lufs_H);
-  glClearColor(1.0f, 1.0f, 1.0f, 0.8f); // White for LUFS
-  glClear(GL_COLOR_BUFFER_BIT);
-
   glDisable(GL_SCISSOR_TEST);
 
   // --- Dynamic Text Overlay (Numeric Readouts & Labels) ---
   std::unique_ptr<juce::LowLevelGraphicsContext> glContext(
-      juce::createOpenGLGraphicsContext(openGLContext, getWidth(),
-                                        getHeight()));
+      juce::createOpenGLGraphicsContext(openGLContext,
+                                        (int)(getWidth() * scale),
+                                        (int)(getHeight() * scale)));
   if (glContext != nullptr) {
     juce::Graphics g(*glContext);
     g.addTransform(juce::AffineTransform::scale(scale));
 
-    float fontSize = 10.0f;
+    float fontSize = 11.0f;
     g.setFont(fontSize);
     g.setColour(juce::Colours::white.withAlpha(0.8f));
 
     auto drawReadout = [&](int x, int y, float dbValue, const char *label) {
       juce::String text =
           (dbValue <= -99.0f) ? "-inf" : juce::String(dbValue, 1);
-      int x_pos = (int)(x / scale);
-      int y_pos = (int)(y / scale);
+      int x_pos = x;
+      int y_pos = y;
 
       g.setColour(juce::Colours::cyan.withAlpha(0.6f));
-      g.drawText(label, x_pos, y_pos - 12, 40, 10, juce::Justification::left);
+      g.setFont(9.0f);
+      g.drawText(label, x_pos, y_pos - 12, 60, 10, juce::Justification::left);
 
       g.setColour(juce::Colours::white);
-      g.drawText(text, x_pos, y_pos, 40, 12, juce::Justification::left);
+      g.setFont(12.0f);
+      g.drawText(text, x_pos, y_pos, 60, 14, juce::Justification::left);
     };
 
-    int textX = (int)(x_start / scale) + 5;
-    int textY_Bottom = (int)(h / scale) - 35;
-    int textY_Top = 25;
+    int sidebarX_log = (int)(x_start / scale);
+    int textY_Top = 75; // Below dashboard
 
     // L/R Labels at top
     g.setColour(juce::Colours::white.withAlpha(0.5f));
-    g.drawText("L", (int)(x_start / scale) + 10, textY_Top, 10, 10,
+    g.setFont(11.0f);
+    g.drawText("L", sidebarX_log + 10, textY_Top, 15, 15,
                juce::Justification::centred);
-    g.drawText("R", (int)(x_start / scale) + 20, textY_Top, 10, 10,
+    g.drawText("R", sidebarX_log + 32, textY_Top, 15, 15,
                juce::Justification::centred);
 
-    // Move readouts to the bottom area (below 40px meter start)
+    // Sidebar footer readouts
     float dbPeakL = juce::Decibels::gainToDecibels(pL);
     float dbPeakR = juce::Decibels::gainToDecibels(pR);
     float dbRMSL = juce::Decibels::gainToDecibels(rL);
     float dbRMSR = juce::Decibels::gainToDecibels(rR);
 
-    // Sidebar footer readouts
-    // Increased vertical spacing to prevent overlap
     // Row 1: Peak & RMS
-    int row1_Y = (int)(h - 75 * scale); // Moving UP (was 55)
-    drawReadout((int)(x_start + 10 * scale), row1_Y, std::max(dbPeakL, dbPeakR),
-                "PEAK");
-    drawReadout((int)(x_start + 55 * scale), row1_Y, (dbRMSL + dbRMSR) * 0.5f,
-                "RMS");
+    int row1_Y = getHeight() - 95;
+    drawReadout(sidebarX_log + 10, row1_Y, std::max(dbPeakL, dbPeakR), "PEAK");
+    drawReadout(sidebarX_log + 55, row1_Y, (dbRMSL + dbRMSR) * 0.5f, "RMS");
 
-    // Row 2: LUFS (Moved up)
-    int row2_Y = (int)(h - 35 * scale); // Moving UP (was 15)
-    drawReadout((int)(x_start + 10 * scale), row2_Y, lufs, "LUFS");
+    // Row 2: LUFS
+    int row2_Y = getHeight() - 45;
+    drawReadout(sidebarX_log + 10, row2_Y, lufs, "LUFS");
   }
 }
 
@@ -508,81 +440,77 @@ void WraithFormAudioProcessorEditor::renderLoudnessDashboard() {
 
   // Background Bar (Top)
   glEnable(GL_SCISSOR_TEST);
-  glScissor(0, (int)((h * scale) - dashH), (int)(w * scale), dashH);
+  glScissor(0, (int)((h - 55) * scale), (int)(w * scale), (int)(55 * scale));
   glClearColor(0.01f, 0.01f, 0.05f, 0.95f); // Deep dark
   glClear(GL_COLOR_BUFFER_BIT);
   glDisable(GL_SCISSOR_TEST);
 
-  // Text Overlay
   std::unique_ptr<juce::LowLevelGraphicsContext> glContext(
-      juce::createOpenGLGraphicsContext(openGLContext, w, h));
+      juce::createOpenGLGraphicsContext(openGLContext, (int)(w * scale),
+                                        (int)(h * scale)));
   if (glContext != nullptr) {
     juce::Graphics g(*glContext);
     g.addTransform(juce::AffineTransform::scale(scale));
 
-    auto drawMetric = [&](int x, int y, const char *label, float value,
-                          bool isLarge) {
+    auto drawMetric = [&](int x, int y, const char *label, float value) {
       juce::String text = (value <= -90.0f) ? "-inf" : juce::String(value, 1);
 
       g.setColour(juce::Colour(0xFFD5FFFF).withAlpha(0.6f));
       g.setFont(9.0f);
-      g.drawText(label, x, y - 15, 80, 12, juce::Justification::left);
+      g.drawText(label, x, y - 14, 120, 10, juce::Justification::left);
 
       g.setColour(juce::Colour(0xFFD5FFFF));
-      g.setFont(juce::Font(isLarge ? 22.0f : 14.0f, juce::Font::bold));
-      g.drawText(text, x, y, 85, isLarge ? 24 : 16, juce::Justification::left);
+      g.setFont(16.0f); // Regular weight, smaller size
+      g.drawText(text, x, y, 120, 20, juce::Justification::left);
 
       g.setFont(9.0f);
       g.setColour(juce::Colour(0xFFD5FFFF).withAlpha(0.4f));
-      // Increased offset to 65 for large text so it doesn't overlap
-      g.drawText("LUFS", x + (isLarge ? 65 : 45), y + (isLarge ? 8 : 4), 30, 10,
-                 juce::Justification::left);
+      g.drawText("LUFS", x + 48, y + 4, 30, 10, juce::Justification::left);
     };
 
     int startX = 20;
     int yOff = 22;
     int spacing = 150; // Increased from ~100 to 150 to prevent overlap
 
-    drawMetric(startX, yOff, "INTEGRATED", audioProcessor.lufsIntegrated.load(),
-               true);
+    drawMetric(startX, yOff, "INTEGRATED",
+               audioProcessor.lufsIntegrated.load());
     drawMetric(startX + spacing, yOff, "SHORT-TERM",
-               audioProcessor.lufsShortTerm.load(), false);
+               audioProcessor.lufsShortTerm.load());
     drawMetric(startX + spacing * 2, yOff, "MOMENTARY",
-               audioProcessor.lufsMomentary.load(), false);
+               audioProcessor.lufsMomentary.load());
 
     // True Peak Readout (Relocated left to avoid sidebar overlap)
     int tpX = w - 260; // Shifted slightly more left
     g.setColour(juce::Colour(0xFFD5FFFF).withAlpha(0.6f));
-    g.setFont(9.0f);
+    g.setFont(10.0f);
     g.drawText("TRUE PEAK (L/R)", tpX, yOff - 15, 120, 12,
                juce::Justification::left);
 
     g.setColour(juce::Colour(0xFFD5FFFF));
-    g.setFont(juce::Font(14.0f, juce::Font::bold));
+    g.setFont(16.0f);
     juce::String tpText = juce::String(audioProcessor.truePeakL.load(), 1) +
                           " / " +
                           juce::String(audioProcessor.truePeakR.load(), 1);
-    g.drawText(tpText, tpX, yOff, 120, 16, juce::Justification::left);
+    g.drawText(tpText, tpX, yOff, 120, 20, juce::Justification::left);
 
     // FULL SCREEN Button REMOVED
 
     // Reset Button (Themed, Bottom Left)
-    int footerY = h - 32;
+    int footerY = h - 35;
     g.setColour(juce::Colour(0xFFD5FFFF).withAlpha(0.6f));
-    g.setFont(juce::Font(10.0f, juce::Font::bold));
-    g.drawRect(20, footerY, 50, 20, 1);
-    g.drawText("RESET", 20, footerY, 50, 20, juce::Justification::centred);
+    g.setFont(juce::Font(11.0f));
+    g.drawRect(20, footerY, 55, 20, 1);
+    g.drawText("RESET", 20, footerY, 55, 20, juce::Justification::centred);
 
     // Quad/Multi Buttons (Beside Reset)
-    quadBtnRect = {80, footerY, 50, 20};
-    multiBtnRect = {140, footerY, 50, 20};
+    quadBtnRect = {85, footerY, 55, 20};
 
     g.setColour(currentMode == VisualizerMode::QuadView
                     ? juce::Colour(0xFFD5FFFF)
                     : juce::Colour(0xFFD5FFFF).withAlpha(0.6f));
     g.drawRect(quadBtnRect, 1);
-    g.setFont(9.0f);
-    g.drawText("MULTI", quadBtnRect, juce::Justification::centred);
+    g.setFont(10.0f);
+    g.drawText("QUAD", quadBtnRect, juce::Justification::centred);
 
     // MULTI BUTTON REMOVED
   }
