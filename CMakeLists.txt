@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(WraithForm VERSION 1.1.0)
+project(WraithForm VERSION 1.2.0)
 
 # JUCE Setup using FetchContent
 include(FetchContent)
@@ -25,7 +25,7 @@ juce_add_plugin(WraithForm
     PLUGIN_CODE WrFm
     FORMATS VST3 Standalone
     PRODUCT_NAME "WraithForm"
-    VERSION 1.1.0
+    VERSION 1.2.0
     ICON_BIG "Source/icon.png"
 )
 
@@ -39,6 +39,7 @@ target_sources(WraithForm PRIVATE
     Source/VisualizerShader.h
     Source/SpectrogramShader.h
     Source/CircularOscilloscopeShader.h
+    Source/CosmicFlareShader.h
     Source/WraithForm.rc
 )
 
@@ -123,7 +124,7 @@ set(CPACK_COMPONENT_STANDALONE_DISPLAY_NAME "Standalone Application")
 set(CPACK_COMPONENT_STANDALONE_DESCRIPTION "The WraithForm standalone executable and ReadMe.")
 
 set(CPACK_COMPONENT_VST3_DISPLAY_NAME "VST3 Plugin")
-set(CPACK_COMPONENT_VST3_DESCRIPTION "The VST3 plugin bundle. Copy to C:\\Program Files\\Common Files\\VST3\\ to use in a DAW.")
+set(CPACK_COMPONENT_VST3_DESCRIPTION "The VST3 plugin bundle. Copy to C:/Program Files/Common Files/VST3/ to use in a DAW.")
 
 # 3. Icon handling (NSIS)
 # ----------------------
@@ -133,8 +134,8 @@ string(REPLACE "\\" "\\\\" ESCAPED_ICON_ICO "${NATIVE_ICON_ICO}")
 
 set(CPACK_NSIS_MUI_ICON "${ESCAPED_ICON_ICO}")
 set(CPACK_NSIS_MUI_UNIICON "${ESCAPED_ICON_ICO}")
-set(CPACK_PACKAGE_EXECUTABLES "WraithForm" "WraithForm")
-set(CPACK_CREATE_DESKTOP_LINKS "WraithForm")
+set(CPACK_PACKAGE_EXECUTABLES "WraithForm_Standalone" "WraithForm")
+set(CPACK_CREATE_DESKTOP_LINKS "WraithForm_Standalone")
 set(CPACK_NSIS_INSTALLED_ICON_NAME "WraithForm.exe")
 set(CPACK_NSIS_MUI_FINISHPAGE_RUN "WraithForm.exe")
 set(CPACK_NSIS_MODIFY_PATH OFF)
@@ -143,20 +144,16 @@ set(CPACK_NSIS_MODIFY_PATH OFF)
 # -----------------------
 # Shortcuts: Desktop, Start Menu (app + readme + uninstall)
 set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
-    CreateShortCut \\\"$DESKTOP\\\\WraithForm.lnk\\\" \\\"$INSTDIR\\\\WraithForm.exe\\\" \\\"\\\" \\\"$INSTDIR\\\\WraithForm.exe\\\" 0
-    CreateDirectory \\\"$SMPROGRAMS\\\\WraithForm\\\"
-    CreateShortCut \\\"$SMPROGRAMS\\\\WraithForm\\\\WraithForm.lnk\\\" \\\"$INSTDIR\\\\WraithForm.exe\\\" \\\"\\\" \\\"$INSTDIR\\\\WraithForm.exe\\\" 0
-    CreateShortCut \\\"$SMPROGRAMS\\\\WraithForm\\\\ReadMe.lnk\\\" \\\"$INSTDIR\\\\ReadMe.txt\\\"
-    CreateShortCut \\\"$SMPROGRAMS\\\\WraithForm\\\\Uninstall WraithForm.lnk\\\" \\\"$INSTDIR\\\\Uninstall.exe\\\"
+    CreateShortCut '$DESKTOP\\WraithForm.lnk' '$INSTDIR\\WraithForm.exe' '' '$INSTDIR\\WraithForm.exe' 0
+    CreateShortCut '$SMPROGRAMS\\WraithForm.lnk' '$INSTDIR\\WraithForm.exe' '' '$INSTDIR\\WraithForm.exe' 0
+    CreateShortCut '$SMPROGRAMS\\ReadMe.lnk' '$INSTDIR\\ReadMe.txt'
 ")
 
 # Uninstall: remove shortcuts, Start Menu folder, desktop icon
 set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
-    Delete \\\"$DESKTOP\\\\WraithForm.lnk\\\"
-    Delete \\\"$SMPROGRAMS\\\\WraithForm\\\\WraithForm.lnk\\\"
-    Delete \\\"$SMPROGRAMS\\\\WraithForm\\\\ReadMe.lnk\\\"
-    Delete \\\"$SMPROGRAMS\\\\WraithForm\\\\Uninstall WraithForm.lnk\\\"
-    RMDir  \\\"$SMPROGRAMS\\\\WraithForm\\\"
+    Delete '$DESKTOP\\WraithForm.lnk'
+    Delete '$SMPROGRAMS\\WraithForm.lnk'
+    Delete '$SMPROGRAMS\\ReadMe.lnk'
 ")
 
 include(CPack)

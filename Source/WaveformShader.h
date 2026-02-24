@@ -9,14 +9,17 @@ const static char *seratoFragmentShader = R"glsl(
     uniform sampler2D u_history; // R: Amp, G: Bass, B: Mid, A: High
     uniform float u_time;
     uniform vec2 u_resolution;
-    uniform vec3 u_glowColor; // Active theme color passed from C++
+    uniform vec3 u_glowColor; 
+    uniform float u_zoom;        // Horizontal zoom factor
 
     void main()
     {
         vec2 uv = v_uv;
 
-        // Horizontal scan (history index)
-        vec4 data = texture2D(u_history, vec2(uv.x, 0.5));
+        // Horizontal scan with zoom: focus on the latest data (right side)
+        float zoomIdx = 1.0 - (1.0 - uv.x) / max(0.1, u_zoom);
+        vec4 data = texture2D(u_history, vec2(zoomIdx, 0.5));
+        
         float amp  = data.r;
         float bass = data.g;
         float mid  = data.b;
@@ -41,31 +44,22 @@ const static char *seratoFragmentShader = R"glsl(
         float total       = bass + mid + high + 0.0001;
         vec3 spectralColor = (bass * bassColor + mid * midColor + high * highColor) / total;
 
-        // Are we inside the waveform or in the outer halo?
-        bool insideWave = dist <= scaledAmp;
-
+        // Core Rendering
         vec3 finalColor;
-        if (insideWave) {
-            // Core: bright, punchy, wide falloff
+        if (dist <= scaledAmp) {
             float intensity = 1.0 - (dist / (scaledAmp + 0.0001));
-            float bright    = 0.6 + 0.9 * pow(intensity, 0.30); // boosted + shallower
+            float bright    = 0.7 + 0.8 * pow(intensity, 0.35); 
             finalColor = spectralColor * bright;
-
-            // Inner white-hot center
-            float core = pow(intensity, 3.0);
-            finalColor += u_glowColor * core * 0.4;
+            finalColor += u_glowColor * pow(intensity, 4.0) * 0.5;
         } else {
-            // Halo zone — soft bloom past the waveform edge
-            float t = 1.0 - clamp(
-                (dist - scaledAmp) / (haloReach - scaledAmp + 0.0001),
-                0.0, 1.0
-            );
-            finalColor = u_glowColor * pow(t, 2.0) * 0.35 * amp;
+            // Halo zone
+            float t = 1.0 - clamp((dist - scaledAmp) / (haloReach - scaledAmp + 0.0001), 0.0, 1.0);
+            finalColor = u_glowColor * pow(t, 2.0) * 0.4 * amp;
         }
 
         // Electric flicker on loud transients
-        finalColor += u_glowColor * max(0.0, amp - 0.6) * 0.25
-                    * (0.5 + 0.5 * sin(u_time * 12.0 + amp * 8.0));
+        finalColor += u_glowColor * max(0.0, amp - 0.6) * 0.3
+                    * (0.5 + 0.5 * sin(u_time * 15.0 + amp * 10.0));
 
         gl_FragColor = vec4(finalColor, 1.0);
     }

@@ -40,6 +40,8 @@ private:
   std::unique_ptr<juce::OpenGLShaderProgram> fireballShader;
   std::unique_ptr<juce::OpenGLShaderProgram> phaseShader;
   std::unique_ptr<juce::OpenGLShaderProgram> cloudVortexShader;
+  std::unique_ptr<juce::OpenGLShaderProgram> cosmicFlareShader;
+  std::unique_ptr<juce::OpenGLShaderProgram> volumetricExplosionShader;
 
   void createShaders();
   void renderSpectrogram();
@@ -49,6 +51,8 @@ private:
   void renderPhaseMeter();
   void renderMeters();
   void renderLoudnessDashboard();
+  void renderCosmicFlare();
+  void renderVolumetricExplosion();
   void renderQuadView();
   void updateAudioData();
   juce::Colour getThemeColour() const;
@@ -62,6 +66,8 @@ private:
     Serato,
     Spectrogram,
     PhaseMeter,
+    CosmicFlare,
+    VolumetricExplosion,
     QuadView
   };
   enum class FFTSize { Transient = 9, AllRound = 11, Harmonic = 13 };
@@ -89,9 +95,11 @@ private:
   float smoothedKickEnergy = 0.0f; // bins 1-5, peak-hold (fireball)
 
   // Cloud tunnel speed accumulator (RMS-driven, wide dynamic range)
+  float cosmicFlareTime = 0.0f;
   float cloudTunnelTime = 0.0f;
+  float stableTime = 0.0f;
   float smoothedRMSLevel = 0.0f;
-  juce::int64 lastCloudFrameMs = 0;
+  double highResLastFrameTime = 0.0;
 
   // Loading Screen & Transition
   juce::Image splashImage;
