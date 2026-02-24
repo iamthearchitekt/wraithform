@@ -6,12 +6,15 @@ const static char *spectrogramFragmentShader = R"glsl(
     #endif
 
     uniform sampler2D u_texture;
+    uniform vec3 u_tintColor;
     varying vec2 v_uv;
 
     void main()
     {
-        // Simple texture lookup. No logic. No complex math.
-        // We assume the texture is prepared on the CPU/Host side.
-        gl_FragColor = texture2D(u_texture, v_uv);
+        vec4 col = texture2D(u_texture, v_uv);
+        // Tint: preserve brightness, shift hue toward active theme color
+        float luma = dot(col.rgb, vec3(0.299, 0.587, 0.114));
+        vec3 tinted = mix(col.rgb, u_tintColor * luma * 1.5, 0.55);
+        gl_FragColor = vec4(tinted, col.a);
     }
 )glsl";

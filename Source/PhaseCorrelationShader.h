@@ -35,7 +35,8 @@ const char *vertexShader = R"(
         normPos = vec2(side, mid);
 
         // Position is now centered at 0,0 locally
-        gl_Position = vec4(normPos.x, normPos.y, 0.0, 1.0);
+        // Nudge left to compensate for sidebar
+        gl_Position = vec4(normPos.x - 0.12, normPos.y, 0.0, 1.0);
         gl_PointSize = 4.0;
     }
 )";

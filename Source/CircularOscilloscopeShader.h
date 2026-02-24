@@ -2,23 +2,26 @@
 
 const static char *circularOscilloscopeFragmentShader = R"glsl(
     #ifdef GL_ES
-    precision mediump float;
+    precision highp float;
+    #else
+    #define highp
     #endif
 
     uniform float u_time;
     uniform vec2 u_resolution;
     uniform sampler2D u_audioData; 
 
-    // Constants matching VisualizerShader.h (Aggressive)
+    // Constants
     const float thickness = 0.008;
     const float gain = 6.0;
-    const float lowpass = 0.15;
+    const float lowpass = 0.55;  // Higher = more low-pass (bass focus)
     const float glow = 0.5;
     const float glowSize = 2.0;
-    const float window = 0.018;
+    const float window = 0.025; // Wider window = smoother = more low-freq look
 
-    // Cyan base color
-    const vec3 glowColor = vec3(0.835, 1.0, 1.0); 
+    // Theme color and bass energy driven by C++ uniforms
+    uniform vec3 u_glowColor;
+    uniform float u_bassEnergy; // 0..1 smooth bass level (bins 1-11)
 
     const float PI = 3.14159265359;
     const float TWO_PI = 6.28318530718;
@@ -35,6 +38,9 @@ const static char *circularOscilloscopeFragmentShader = R"glsl(
         
         // Remap UV to centered coordinates -1..1
         vec2 p = uv * 2.0 - 1.0;
+        
+        // Nudge center to the left to compensate for sidebar
+        p.x += 0.12;
         
         // Correct aspect ratio so the circle is perfect
         if (u_resolution.x > u_resolution.y) {
@@ -86,8 +92,10 @@ const static char *circularOscilloscopeFragmentShader = R"glsl(
         // Base radius for the circle
         float baseRadius = 0.5;
         
-        // Modulate radius by amplitude
-        float targetRadius = baseRadius + amp * 0.15; // Scale amplitude effect on radius
+        // Modulate radius by amplitude + bass energy
+        // On a bass hit: ring breathes outward more dramatically
+        float radiusScale = 0.18 + 0.12 * u_bassEnergy;
+        float targetRadius = baseRadius + amp * radiusScale;
 
         // --- Rendering ---
 
@@ -107,8 +115,8 @@ const static char *circularOscilloscopeFragmentShader = R"glsl(
         float g = glow * (0.6 + 0.8 * energy);
 
         float intensity = line;
-        intensity += innerGlow * (0.15 * g);
-        intensity += outerGlow * (0.05 * g);
+        intensity += innerGlow * (0.40 * g);
+        intensity += outerGlow * (0.18 * g);
 
         intensity = clamp(intensity, 0.0, 1.0);
 
@@ -119,13 +127,11 @@ const static char *circularOscilloscopeFragmentShader = R"glsl(
         float pulseEnergy = (sampleWave(0.1) + sampleWave(0.5) + sampleWave(0.9)) / 3.0;
         pulseEnergy = clamp(abs((pulseEnergy - 0.5) * 2.0), 0.0, 1.0);
         
-        // Radial distance from center (r)
-        // Soft, wide glow from center
-        float bgGlow = 1.0 - smoothstep(0.0, 0.6 + 0.2 * pulseEnergy, r);
-        // Make it subtle
-        bgGlow *= 0.2 * (0.5 + 0.5 * pulseEnergy);
+        // Background glow: pulses harder with bass energy
+        float bgGlow = 1.0 - smoothstep(0.0, 0.55 + 0.25 * u_bassEnergy, r);
+        bgGlow *= 0.40 * (0.5 + 0.5 * u_bassEnergy);
         
-        vec3 finalColor = glowColor * intensity + glowColor * bgGlow;
+        vec3 finalColor = u_glowColor * intensity + u_glowColor * bgGlow;
 
         gl_FragColor = vec4(finalColor, 1.0);
     }
@@ -133,32 +139,29 @@ const static char *circularOscilloscopeFragmentShader = R"glsl(
 
 const static char *fireBallFragmentShader = R"glsl(
     #ifdef GL_ES
-    precision mediump float;
+    precision highp float;
+    #else
+    #define highp
     #endif
 
     uniform float u_time;
     uniform vec2 u_resolution;
+    uniform float u_audioEnergy; // 0..1, driven by RMS from C++
+    uniform vec3  u_glowColor;   // Active theme color from C++
 
-    // Hardcoded defaults for "GreatBallOfFire"
+    // Hardcoded motion parameters for "GreatBallOfFire"
     const vec2 offset = vec2(0.0, 0.0);
     const float rotation = 0.0;
     const float size = 3.5;
     const float depth = 0.1;
-    const float density = 2.5;
-    const float rateX = -1.5; // Slightly slower than original
+    const float rateX = -1.5;
     const float rateY = -0.3;
     const float rateZ = 1.5;
 
     #define saturate(oo) clamp(oo, 0.0, 1.0)
-    #define MarchSteps 12 // Increased for better detail
+    #define MarchSteps 30
     #define Radius 0.8
-    #define NoiseSteps 4
-    
-    // Ice Blue Theme (#D5FFFF)
-    #define Color1 vec4(0.835, 1.0, 1.0, 1.0) // Primary Ice Blue
-    #define Color2 vec4(0.5, 0.85, 0.9, 1.0)  // Mid Cyan
-    #define Color3 vec4(0.2, 0.5, 0.6, 1.0)  // Slate Blue-Cyan
-    #define Color4 vec4(0.01, 0.05, 0.1, 1.0) // Deep Dark Base
+    #define NoiseSteps 6
 
     vec3 mod196(vec3 x) { return x - floor(x * (1.0 / 196.0)) * 196.0; }
     vec4 mod196(vec4 x) { return x - floor(x * (1.0 / 196.0)) * 196.0; }
@@ -225,19 +228,32 @@ const static char *fireBallFragmentShader = R"glsl(
 
     float SphereDist(vec3 position) { return length(position) - Radius; }
 
+    // Theme-driven fireball palette derived from u_glowColor uniform
     vec4 Shade(float distance)
     {
-        float c1 = saturate(distance*5.0 + 0.5);
-        float c2 = saturate(distance*5.0);
-        float c3 = saturate(distance*3.4 - 0.5);
-        vec4 a = mix(Color1,Color2, c1);
-        vec4 b = mix(a,     Color3, c2);
-        return 	 mix(b,     Color4, c3);
+        float c1 = saturate(distance * 5.0 + 0.5);
+        float c2 = saturate(distance * 5.0);
+        float c3 = saturate(distance * 3.4 - 0.5);
+        // Hot core: white-hot blow-out
+        vec4 Color1 = vec4(mix(vec3(1.3), u_glowColor, 0.15), 1.0);
+        // Mid layer: vivid theme color, bright
+        vec4 Color2 = vec4(u_glowColor * 1.6, 1.0);
+        // Transition: mid-dim theme
+        vec4 Color3 = vec4(u_glowColor * 0.45, 1.0);
+        // Outer darkness: near-black (hint of color)
+        vec4 Color4 = vec4(u_glowColor * 0.04, 1.0);
+        vec4 a = mix(Color1, Color2, c1);
+        vec4 b = mix(a,      Color3, c2);
+        return       mix(b,  Color4, c3);
     }
 
     float RenderScene(vec3 position, out float distance)
     {
-        float noise = Turbulence(position * density + vec3(rateZ, rateX, rateY)*u_time, 0.1, 1.5, 0.03) * depth;
+        // Density: quiet=1.5 (small, calm), bass-hit=5.0 (large, turbulent)
+        float liveDensity = 1.5 + u_audioEnergy * 3.5;
+        // Depth: quiet=0.04 (smooth ball), bass-hit=0.28 (spiky corona)
+        float liveDepth   = 0.025 + u_audioEnergy * 0.18;
+        float noise = Turbulence(position * liveDensity + vec3(rateZ, rateX, rateY)*u_time, 0.1, 1.5, 0.03) * liveDepth;
         noise = saturate(abs(noise));
         distance = SphereDist(position) - noise;
         return noise;
@@ -276,6 +292,9 @@ const static char *fireBallFragmentShader = R"glsl(
         // Map to -1..1
         vec2 p = v_uv * 2.0 - 1.0;
         
+        // Nudge center to the left to compensate for sidebar
+        p.x += 0.12;
+
         // Correct aspect ratio using u_resolution
         if (u_resolution.x > u_resolution.y) {
             p.x *= u_resolution.x / u_resolution.y;

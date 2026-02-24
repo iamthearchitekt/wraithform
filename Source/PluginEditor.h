@@ -39,6 +39,7 @@ private:
   std::unique_ptr<juce::OpenGLShaderProgram> splashShader;
   std::unique_ptr<juce::OpenGLShaderProgram> fireballShader;
   std::unique_ptr<juce::OpenGLShaderProgram> phaseShader;
+  std::unique_ptr<juce::OpenGLShaderProgram> cloudVortexShader;
 
   void createShaders();
   void renderSpectrogram();
@@ -50,6 +51,8 @@ private:
   void renderLoudnessDashboard();
   void renderQuadView();
   void updateAudioData();
+  juce::Colour getThemeColour() const;
+  void getThemeRGB(float &r, float &g, float &b) const;
 
   // Mode
   enum class VisualizerMode {
@@ -64,9 +67,13 @@ private:
   enum class FFTSize { Transient = 9, AllRound = 11, Harmonic = 13 };
   VisualizerMode currentMode = VisualizerMode::Loading;
 
+  // Color Palette Mode
+  enum class ColorMode { Default, UV, Infrared, Heat, Plasma };
+  ColorMode currentColorMode = ColorMode::Default;
+
   bool isFullScreen = false;
   juce::Rectangle<int> quadBtnRect, multiBtnRect, resetBtnRect,
-      fullScreenBtnRect;
+      fullScreenBtnRect, zoomBtnRect;
 
   // Waveform / Serato History (Mirroring Processor)
   std::vector<WaveformPoint> waveformHistory;
@@ -76,6 +83,15 @@ private:
   // Correlation Meter
   float currentCorrelation = 0.0f;
   float smoothedCorrelation = 0.0f;
+
+  // Bass/kick energy for circular view audio reactivity
+  float smoothedBassEnergy = 0.0f; // bins 1-11, gentle smooth (cloud)
+  float smoothedKickEnergy = 0.0f; // bins 1-5, peak-hold (fireball)
+
+  // Cloud tunnel speed accumulator (RMS-driven, wide dynamic range)
+  float cloudTunnelTime = 0.0f;
+  float smoothedRMSLevel = 0.0f;
+  juce::int64 lastCloudFrameMs = 0;
 
   // Loading Screen & Transition
   juce::Image splashImage;
@@ -100,7 +116,7 @@ private:
   std::vector<float> textureData; // Mono for Oscilloscope
   std::vector<juce::Point<float>>
       phaseData; // Stereo (x=L, y=R) for Phase Meter
-  static const int textureSize = 4096;
+  static const int textureSize = 8192;
   int findTriggerPoint(const std::vector<float> &data, int size);
 
   // FFT Data
@@ -117,6 +133,7 @@ private:
 
   // Geometry
   std::vector<float> quadVertices;
+  float waveformZoom = 4.0f;
 
   // Dashboard button hitboxes
 

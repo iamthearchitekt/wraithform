@@ -72,8 +72,8 @@ void WraithFormAudioProcessor::prepareToPlay(double sampleRate,
                                              int samplesPerBlock) {
   // Use this method as the place to do any pre-playback
   // initialization that you need..
-  visualizerBufferL.resize(8192);
-  visualizerBufferR.resize(8192);
+  visualizerBufferL.resize(32768);
+  visualizerBufferR.resize(32768);
 
   this->sampleRate = sampleRate;
 

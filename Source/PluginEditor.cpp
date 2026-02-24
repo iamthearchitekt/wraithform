@@ -1,5 +1,6 @@
 #include "PluginEditor.h"
 #include "CircularOscilloscopeShader.h"
+#include "CloudVortexShader.h"
 #include "PhaseCorrelationShader.h"
 #include "PluginProcessor.h"
 #include "SpectrogramShader.h"
@@ -244,10 +245,39 @@ void WraithFormAudioProcessorEditor::mouseDown(const juce::MouseEvent &e) {
     }
 
     // QUAD View Toggle (Beside Reset)
-    if (e.x > 80 && e.x < 130 && e.y > getHeight() - 40) {
+    if (e.x > 80 && e.x < 140 && e.y > getHeight() - 40) {
       currentMode = (currentMode == VisualizerMode::QuadView)
                         ? VisualizerMode::Oscilloscope
                         : VisualizerMode::QuadView;
+      openGLContext.triggerRepaint();
+      return;
+    }
+
+    // ZOOM Toggle (Beside QUAD/Color in Linear/Quad Mode)
+    if (!zoomBtnRect.isEmpty() && zoomBtnRect.contains(e.getPosition())) {
+      if (waveformZoom < 2.0f)
+        waveformZoom = 2.0f;
+      else if (waveformZoom < 4.0f)
+        waveformZoom = 4.0f;
+      else
+        waveformZoom = 1.0f;
+
+      openGLContext.triggerRepaint();
+      return;
+    }
+
+    // COLOR MODE Toggle (Beside QUAD)
+    if (e.x > 148 && e.x < 218 && e.y > getHeight() - 40) {
+      if (currentColorMode == ColorMode::Default)
+        currentColorMode = ColorMode::UV;
+      else if (currentColorMode == ColorMode::UV)
+        currentColorMode = ColorMode::Infrared;
+      else if (currentColorMode == ColorMode::Infrared)
+        currentColorMode = ColorMode::Heat;
+      else if (currentColorMode == ColorMode::Heat)
+        currentColorMode = ColorMode::Plasma;
+      else
+        currentColorMode = ColorMode::Default;
       openGLContext.triggerRepaint();
       return;
     }
@@ -297,6 +327,46 @@ int WraithFormAudioProcessorEditor::findTriggerPoint(
     }
   }
   return 0;
+}
+
+// Returns the active skin colour as a JUCE Colour
+juce::Colour WraithFormAudioProcessorEditor::getThemeColour() const {
+  if (currentColorMode == ColorMode::UV)
+    return juce::Colour(0xFF6103FF); // Deep blue-violet (UV)
+  else if (currentColorMode == ColorMode::Infrared)
+    return juce::Colour(0xFFFF3A28); // Deep Red
+  else if (currentColorMode == ColorMode::Heat)
+    return juce::Colour(0xFFFF7200); // Flame Orange
+  else if (currentColorMode == ColorMode::Plasma)
+    return juce::Colour(0xFF33FF11); // Radioactive Green
+  return juce::Colour(0xFFD5FFFF);   // Default Ice Blue
+}
+
+// RGB triplet for OpenGL (passed to shader or glClearColor)
+void WraithFormAudioProcessorEditor::getThemeRGB(float &r, float &g,
+                                                 float &b) const {
+  if (currentColorMode == ColorMode::UV) {
+    r = 0.38f;
+    g = 0.02f;
+    b = 1.0f;
+  } else if (currentColorMode == ColorMode::Infrared) {
+    r = 1.0f;
+    g = 0.23f;
+    b = 0.16f;
+  } else if (currentColorMode == ColorMode::Heat) {
+    r = 1.0f;
+    g = 0.45f;
+    b = 0.05f;
+  } else if (currentColorMode == ColorMode::Plasma) {
+    r = 0.2f;
+    g = 1.0f;
+    b = 0.07f;
+  } // Radioactive Green
+  else {
+    r = 0.835f;
+    g = 1.0f;
+    b = 1.0f;
+  }
 }
 
 void WraithFormAudioProcessorEditor::renderMeters() {
@@ -356,12 +426,14 @@ void WraithFormAudioProcessorEditor::renderMeters() {
 
   auto drawMeter = [&](int x_off, float val, bool isRMS) {
     int barH = (int)(val * meterHeight);
-    // GL bottom = 100 logical pixels
-    glScissor(x_start + x_off, (int)(100 * scale), barW, barH);
+    // GL bottom = 115 logical pixels (clears PEAK label at ~107px)
+    glScissor(x_start + x_off, (int)(115 * scale), barW, barH);
+    float tr, tg, tb;
+    getThemeRGB(tr, tg, tb);
     if (isRMS)
-      glClearColor(0.0f, 0.5f, 0.6f, 0.9f); // Deeper Cyan (RMS)
+      glClearColor(tr * 0.5f, tg * 0.55f, tb * 0.55f, 0.9f);
     else
-      glClearColor(0.0f, 0.8f, 0.9f, 1.0f); // Vibrant Cyan (Peak)
+      glClearColor(tr, tg, tb, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
   };
 
@@ -393,7 +465,7 @@ void WraithFormAudioProcessorEditor::renderMeters() {
       int x_pos = x;
       int y_pos = y;
 
-      g.setColour(juce::Colours::cyan.withAlpha(0.6f));
+      g.setColour(getThemeColour().withAlpha(0.6f));
       g.setFont(9.0f);
       g.drawText(label, x_pos, y_pos - 12, 60, 10, juce::Justification::left);
 
@@ -454,17 +526,15 @@ void WraithFormAudioProcessorEditor::renderLoudnessDashboard() {
 
     auto drawMetric = [&](int x, int y, const char *label, float value) {
       juce::String text = (value <= -90.0f) ? "-inf" : juce::String(value, 1);
-
-      g.setColour(juce::Colour(0xFFD5FFFF).withAlpha(0.6f));
+      juce::Colour tc = getThemeColour();
+      g.setColour(tc.withAlpha(0.6f));
       g.setFont(9.0f);
       g.drawText(label, x, y - 14, 120, 10, juce::Justification::left);
-
-      g.setColour(juce::Colour(0xFFD5FFFF));
-      g.setFont(16.0f); // Regular weight, smaller size
+      g.setColour(tc);
+      g.setFont(16.0f);
       g.drawText(text, x, y, 120, 20, juce::Justification::left);
-
       g.setFont(9.0f);
-      g.setColour(juce::Colour(0xFFD5FFFF).withAlpha(0.4f));
+      g.setColour(tc.withAlpha(0.4f));
       g.drawText("LUFS", x + 48, y + 4, 30, 10, juce::Justification::left);
     };
 
@@ -479,38 +549,73 @@ void WraithFormAudioProcessorEditor::renderLoudnessDashboard() {
     drawMetric(startX + spacing * 2, yOff, "MOMENTARY",
                audioProcessor.lufsMomentary.load());
 
-    // True Peak Readout (Relocated left to avoid sidebar overlap)
-    int tpX = w - 260; // Shifted slightly more left
-    g.setColour(juce::Colour(0xFFD5FFFF).withAlpha(0.6f));
+    // True Peak Readout
+    int tpX = w - 260;
+    juce::Colour tc = getThemeColour();
+    g.setColour(tc.withAlpha(0.6f));
     g.setFont(10.0f);
     g.drawText("TRUE PEAK (L/R)", tpX, yOff - 15, 120, 12,
                juce::Justification::left);
-
-    g.setColour(juce::Colour(0xFFD5FFFF));
+    g.setColour(tc);
     g.setFont(16.0f);
     juce::String tpText = juce::String(audioProcessor.truePeakL.load(), 1) +
                           " / " +
                           juce::String(audioProcessor.truePeakR.load(), 1);
     g.drawText(tpText, tpX, yOff, 120, 20, juce::Justification::left);
 
-    // FULL SCREEN Button REMOVED
-
-    // Reset Button (Themed, Bottom Left)
+    // Reset Button
     int footerY = h - 35;
-    g.setColour(juce::Colour(0xFFD5FFFF).withAlpha(0.6f));
+    g.setColour(tc.withAlpha(0.6f));
     g.setFont(juce::Font(11.0f));
     g.drawRect(20, footerY, 55, 20, 1);
     g.drawText("RESET", 20, footerY, 55, 20, juce::Justification::centred);
 
-    // Quad/Multi Buttons (Beside Reset)
+    // Quad Button
     quadBtnRect = {85, footerY, 55, 20};
-
-    g.setColour(currentMode == VisualizerMode::QuadView
-                    ? juce::Colour(0xFFD5FFFF)
-                    : juce::Colour(0xFFD5FFFF).withAlpha(0.6f));
+    g.setColour(currentMode == VisualizerMode::QuadView ? tc
+                                                        : tc.withAlpha(0.6f));
     g.drawRect(quadBtnRect, 1);
     g.setFont(10.0f);
     g.drawText("QUAD", quadBtnRect, juce::Justification::centred);
+
+    // COLOR MODE Button (Beside QUAD)
+    juce::Rectangle<int> colorBtnRect = {150, footerY, 65, 20};
+    // Pick swatch colour per mode
+    juce::Colour swatchColor;
+    juce::String colorLabel;
+    if (currentColorMode == ColorMode::Default) {
+      swatchColor = juce::Colour(0xFFD5FFFF);
+      colorLabel = "DEFAULT";
+    } else if (currentColorMode == ColorMode::UV) {
+      swatchColor = juce::Colour(0xFF6103FF);
+      colorLabel = "UV";
+    } else if (currentColorMode == ColorMode::Infrared) {
+      swatchColor = juce::Colour(0xFFFF3A28);
+      colorLabel = "INFRA";
+    } else if (currentColorMode == ColorMode::Plasma) {
+      swatchColor = juce::Colour(0xFF33FF11);
+      colorLabel = "PLASMA";
+    } else {
+      swatchColor = juce::Colour(0xFFFF7200);
+      colorLabel = "HEAT";
+    }
+    g.setColour(swatchColor.withAlpha(0.85f));
+    g.drawRect(colorBtnRect, 1);
+    g.setFont(10.0f);
+    g.drawText(colorLabel, colorBtnRect, juce::Justification::centred);
+
+    // ZOOM Button (Visible in Oscilloscope and QuadView)
+    if (currentMode == VisualizerMode::Oscilloscope ||
+        currentMode == VisualizerMode::QuadView) {
+      zoomBtnRect = {225, footerY, 70, 20};
+      g.setColour(tc.withAlpha(0.6f));
+      g.drawRect(zoomBtnRect, 1);
+      g.setFont(10.0f);
+      juce::String zoomLabel = "ZOOM X" + juce::String((int)waveformZoom);
+      g.drawText(zoomLabel, zoomBtnRect, juce::Justification::centred);
+    } else {
+      zoomBtnRect = {}; // Inactive
+    }
 
     // MULTI BUTTON REMOVED
   }
@@ -571,6 +676,24 @@ void WraithFormAudioProcessorEditor::renderOpenGL() {
   // ALWAYS update audio data before rendering any mode
   updateAudioData();
 
+  // --- Update Cloud Tunnel accumulation for all modes ---
+  {
+    juce::int64 nowMs = juce::Time::getMillisecondCounter();
+    if (lastCloudFrameMs == 0)
+      lastCloudFrameMs = nowMs;
+    float deltaT =
+        juce::jlimit(0.0f, 0.05f, (float)(nowMs - lastCloudFrameMs) / 1000.0f);
+    lastCloudFrameMs = nowMs;
+
+    float rmsNow =
+        (audioProcessor.rmsL.load() + audioProcessor.rmsR.load()) * 0.5f;
+    smoothedRMSLevel = smoothedRMSLevel * 0.93f + rmsNow * 0.07f;
+
+    float rmsNorm = juce::jlimit(0.0f, 1.0f, smoothedRMSLevel * 4.0f);
+    float tunnelSpeed = 0.15f + 9.85f * std::pow(rmsNorm, 2.5f);
+    cloudTunnelTime += deltaT * tunnelSpeed;
+  }
+
   // SIDEBAR ANIMATION (Self-driven without Timer)
   if (isSideBarVisible && sideBarAnimation < 1.0f)
     sideBarAnimation = std::min(1.0f, sideBarAnimation + 0.05f);
@@ -592,6 +715,7 @@ void WraithFormAudioProcessorEditor::renderOpenGL() {
   glViewport(0, 0, (int)(getWidth() * desktopScale),
              (int)(getHeight() * desktopScale));
   glDisable(GL_SCISSOR_TEST);
+  glDisable(GL_CULL_FACE); // PREVENT DIAGONAL LINE ARTIFACTS
 
   // 1. Render Active Mode
   if (currentMode == VisualizerMode::Spectrogram)
@@ -657,6 +781,56 @@ void WraithFormAudioProcessorEditor::renderCircularOscilloscope() {
   if (circularShader == nullptr)
     return;
 
+  // --- 1. Render CloudVortex background (opaque) ---
+  if (cloudVortexShader != nullptr) {
+    cloudVortexShader->use();
+    GLint vp2[4];
+    glGetIntegerv(GL_VIEWPORT, vp2);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glUniform2f(
+        glGetUniformLocation(cloudVortexShader->getProgramID(), "u_resolution"),
+        (GLfloat)vp2[2], (GLfloat)vp2[3]);
+    glUniform1f(
+        glGetUniformLocation(cloudVortexShader->getProgramID(), "u_time"),
+        (GLfloat)juce::Time::getMillisecondCounter() / 1000.0f);
+
+    // Tunnel speed is now accumulated globally in renderOpenGL
+
+    glUniform1f(
+        glGetUniformLocation(cloudVortexShader->getProgramID(), "u_cloudT"),
+        cloudTunnelTime);
+
+    float bassEnergy = 0.0f;
+    int bgBins = std::min(12, (int)fftOutput.size());
+    for (int i = 1; i < bgBins; ++i)
+      bassEnergy += fftOutput[i];
+    bassEnergy = juce::jlimit(0.0f, 1.0f, bassEnergy / (float)(bgBins - 1));
+    // Smooth it gently so clouds don't snap
+    smoothedBassEnergy = smoothedBassEnergy * 0.88f + bassEnergy * 0.12f;
+
+    glUniform1f(glGetUniformLocation(cloudVortexShader->getProgramID(),
+                                     "u_audioEnergy"),
+                smoothedBassEnergy);
+    float tr, tg, tb;
+    getThemeRGB(tr, tg, tb);
+    glUniform3f(
+        glGetUniformLocation(cloudVortexShader->getProgramID(), "u_glowColor"),
+        tr, tg, tb);
+    GLint cloudPos =
+        glGetAttribLocation(cloudVortexShader->getProgramID(), "position");
+    if (cloudPos > -1) {
+      glEnableVertexAttribArray(cloudPos);
+      static const GLfloat fullQuad[] = {-1, -1, 1, -1, -1, 1, 1, 1};
+      glVertexAttribPointer(cloudPos, 2, GL_FLOAT, GL_FALSE, 0, fullQuad);
+      glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+      glDisableVertexAttribArray(cloudPos);
+    }
+  }
+
+  // Switch to ADDITIVE blend — ring and fireball glow layers on top of cloud
+  glBlendFunc(GL_ONE, GL_ONE);
+
+  // --- 2. Render circular oscilloscope ring ---
   circularShader->use();
 
   // Update Uniforms
@@ -682,9 +856,23 @@ void WraithFormAudioProcessorEditor::renderCircularOscilloscope() {
   GLint audioLoc =
       glGetUniformLocation(circularShader->getProgramID(), "u_audioData");
   if (audioLoc > -1)
-    glUniform1i(audioLoc, 0); // slot 0
+    glUniform1i(audioLoc, 0);
 
-  // Draw Full Screen Quad
+  // Bind theme glow color
+  GLint circGlowLoc =
+      glGetUniformLocation(circularShader->getProgramID(), "u_glowColor");
+  if (circGlowLoc > -1) {
+    float tr, tg, tb;
+    getThemeRGB(tr, tg, tb);
+    glUniform3f(circGlowLoc, tr, tg, tb);
+  }
+
+  // Bind bass energy for radius and glow modulation
+  GLint circBassLoc =
+      glGetUniformLocation(circularShader->getProgramID(), "u_bassEnergy");
+  if (circBassLoc > -1)
+    glUniform1f(circBassLoc, smoothedBassEnergy);
+
   GLint positionAttribute =
       glGetAttribLocation(circularShader->getProgramID(), "position");
 
@@ -698,7 +886,8 @@ void WraithFormAudioProcessorEditor::renderCircularOscilloscope() {
     glDisableVertexAttribArray(positionAttribute);
   }
 
-  // --- Render Fireball Core ---
+  // --- Render Fireball Core (normal alpha blend = truly on top of ring) ---
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   if (fireballShader != nullptr) {
     fireballShader->use();
     glUniform2f(
@@ -707,7 +896,28 @@ void WraithFormAudioProcessorEditor::renderCircularOscilloscope() {
     glUniform1f(glGetUniformLocation(fireballShader->getProgramID(), "u_time"),
                 (GLfloat)juce::Time::getMillisecondCounter() / 1000.0f);
 
-    // Draw a smaller quad in the center for the fireball
+    // kickEnergy: bins 1-5 (~21-107Hz) with peak-hold decay
+    // — punchy transients: kick drum hits register immediately and decay slowly
+    float rawKick = 0.0f;
+    int kickBins = std::min(6, (int)fftOutput.size());
+    for (int i = 1; i < kickBins; ++i)
+      rawKick += fftOutput[i];
+    rawKick = juce::jlimit(0.0f, 1.0f, rawKick / (float)(kickBins - 1));
+    // Peak-hold: rise fast, decay slowly (~3-4 frames at 60fps)
+    smoothedKickEnergy = std::max(smoothedKickEnergy * 0.82f, rawKick);
+
+    glUniform1f(
+        glGetUniformLocation(fireballShader->getProgramID(), "u_audioEnergy"),
+        smoothedKickEnergy);
+
+    // Bind theme color so Shade() palette follows ColorMode
+    float fbR, fbG, fbB;
+    getThemeRGB(fbR, fbG, fbB);
+    GLint fireGlowLoc =
+        glGetUniformLocation(fireballShader->getProgramID(), "u_glowColor");
+    if (fireGlowLoc > -1)
+      glUniform3f(fireGlowLoc, fbR, fbG, fbB);
+
     GLint firePosAttr =
         glGetAttribLocation(fireballShader->getProgramID(), "position");
     if (firePosAttr > -1) {
@@ -721,6 +931,8 @@ void WraithFormAudioProcessorEditor::renderCircularOscilloscope() {
       glDisableVertexAttribArray(firePosAttr);
     }
   }
+  // Restore normal alpha blend so dashboard/meters render correctly on top
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void WraithFormAudioProcessorEditor::renderOscilloscope() {
@@ -746,6 +958,15 @@ void WraithFormAudioProcessorEditor::renderOscilloscope() {
   if (timeLoc > -1)
     glUniform1f(timeLoc,
                 (GLfloat)juce::Time::getMillisecondCounter() / 1000.0f);
+
+  // Bind glow color based on current ColorMode via centralized helper
+  GLint glowColorLoc =
+      glGetUniformLocation(oscilloscopeShader->getProgramID(), "u_glowColor");
+  if (glowColorLoc > -1) {
+    float tr, tg, tb;
+    getThemeRGB(tr, tg, tb);
+    glUniform3f(glowColorLoc, tr, tg, tb);
+  }
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, audioTextureID);
@@ -816,6 +1037,15 @@ void WraithFormAudioProcessorEditor::renderSpectrogram() {
   if (loc >= 0)
     glUniform1i(loc, 0);
 
+  // Bind theme tint color
+  GLint tintLoc =
+      glGetUniformLocation(spectrogramShader->getProgramID(), "u_tintColor");
+  if (tintLoc > -1) {
+    float tr, tg, tb;
+    getThemeRGB(tr, tg, tb);
+    glUniform3f(tintLoc, tr, tg, tb);
+  }
+
   // Draw
   GLint posLoc =
       glGetAttribLocation(spectrogramShader->getProgramID(), "position");
@@ -835,6 +1065,7 @@ void WraithFormAudioProcessorEditor::openGLContextClosing() {
   glDeleteTextures(1, &audioTextureID);
   circularShader = nullptr;
   seratoShader = nullptr;
+  cloudVortexShader = nullptr;
   if (waveformHistoryTexture != 0) {
     glDeleteTextures(1, &waveformHistoryTexture);
     waveformHistoryTexture = 0;
@@ -859,8 +1090,23 @@ void WraithFormAudioProcessorEditor::updateAudioData() {
 
   int trigger = findTriggerPoint(wideSum, searchSize);
 
+  // Apply horizontal zoom by adjusting the sampling step
+  float step = 1.0f / waveformZoom;
   for (int i = 0; i < textureSize; ++i) {
-    textureData[i] = wideSum[trigger + i];
+    float sourceIdx = (float)i * step;
+    int idx1 = (int)sourceIdx;
+
+    // Safety clamp for interpolation lookahead
+    int idx2 = idx1 + 1;
+    if (trigger + idx2 >= searchSize)
+      idx2 = idx1;
+
+    float frac = sourceIdx - (float)idx1;
+
+    // Linear interpolation for smooth zoomed visuals
+    float v1 = wideSum[trigger + idx1];
+    float v2 = wideSum[trigger + idx2];
+    textureData[i] = v1 + (v2 - v1) * frac;
   }
 
   // 1. Upload Image to Texture
@@ -869,7 +1115,7 @@ void WraithFormAudioProcessorEditor::updateAudioData() {
   // 1.5 Populate Phase Data (Stereo)
   // We need synchronized L/R samples for the goniometer.
   // We use a smaller window than the search, just enough for the frame.
-  int phasePoints = 1024; // Number of points to draw
+  int phasePoints = 2048; // Number of points to draw (Increased for detail)
   if (phaseData.size() != phasePoints)
     phaseData.resize(phasePoints);
 
@@ -1013,6 +1259,14 @@ void WraithFormAudioProcessorEditor::renderSeratoWaveform() {
   glUniform1i(glGetUniformLocation(seratoShader->getProgramID(), "u_history"),
               0);
 
+  // Bind theme color
+  float tr, tg, tb;
+  getThemeRGB(tr, tg, tb);
+  GLint seratoGlowLoc =
+      glGetUniformLocation(seratoShader->getProgramID(), "u_glowColor");
+  if (seratoGlowLoc > -1)
+    glUniform3f(seratoGlowLoc, tr, tg, tb);
+
   GLint posLoc = glGetAttribLocation(seratoShader->getProgramID(), "position");
   if (posLoc > -1) {
     glEnableVertexAttribArray(posLoc);
@@ -1067,13 +1321,55 @@ void WraithFormAudioProcessorEditor::renderPhaseMeter() {
   if (phaseShader == nullptr)
     return;
 
-  // CRITICAL FIX: Must activate the shader!
+  // --- 1. Render CloudVortex background ---
+  if (cloudVortexShader != nullptr) {
+    glDisable(GL_CULL_FACE); // Extra safety for the background quad
+
+    cloudVortexShader->use();
+    glUniform1f(
+        glGetUniformLocation(cloudVortexShader->getProgramID(), "u_time"),
+        (GLfloat)juce::Time::getMillisecondCounter() / 1000.0f);
+    glUniform2f(
+        glGetUniformLocation(cloudVortexShader->getProgramID(), "u_resolution"),
+        (GLfloat)getWidth(), (GLfloat)getHeight());
+    glUniform1f(
+        glGetUniformLocation(cloudVortexShader->getProgramID(), "u_cloudT"),
+        cloudTunnelTime);
+
+    // Pass audio energy
+    float bassEnergy =
+        (audioProcessor.rmsL.load() + audioProcessor.rmsR.load()) * 0.5f;
+    glUniform1f(glGetUniformLocation(cloudVortexShader->getProgramID(),
+                                     "u_audioEnergy"),
+                juce::jlimit(0.0f, 1.0f, bassEnergy * 2.0f));
+
+    float tr, tg, tb;
+    getThemeRGB(tr, tg, tb);
+    glUniform3f(
+        glGetUniformLocation(cloudVortexShader->getProgramID(), "u_glowColor"),
+        tr, tg, tb);
+
+    GLint posAttr =
+        glGetAttribLocation(cloudVortexShader->getProgramID(), "position");
+    glEnableVertexAttribArray(posAttr);
+
+    // Static quad for zero-jitter and correct winding
+    static const GLfloat v[] = {-1.0f, -1.0f, 1.0f, -1.0f,
+                                -1.0f, 1.0f,  1.0f, 1.0f};
+    glVertexAttribPointer(posAttr, 2, GL_FLOAT, GL_FALSE, 0, v);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glDisableVertexAttribArray(posAttr);
+  }
+
+  // --- 2. Render Phase Meter Particles ---
   phaseShader->use();
 
   // Robust State Setup
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE); // Pure Additive for strong glow
   glDisable(GL_SCISSOR_TEST);
   glDisable(GL_DEPTH_TEST);
-  glPointSize(4.0f);
+  glPointSize(2.0f); // Decreased for finer detail
 
   GLint vp[4];
   glGetIntegerv(GL_VIEWPORT, vp);
@@ -1082,9 +1378,13 @@ void WraithFormAudioProcessorEditor::renderPhaseMeter() {
   glUniform2f(glGetUniformLocation(phaseShader->getProgramID(), "u_resolution"),
               (GLfloat)vp[2], (GLfloat)vp[3]);
   glUniform1f(glGetUniformLocation(phaseShader->getProgramID(), "scale"),
-              2.45f); // Reduced by 30% from 3.5
-  glUniform4f(glGetUniformLocation(phaseShader->getProgramID(), "color"),
-              0.835f, 1.0f, 1.0f, 0.9f);
+              2.45f);
+  {
+    float tr, tg, tb;
+    getThemeRGB(tr, tg, tb);
+    glUniform4f(glGetUniformLocation(phaseShader->getProgramID(), "color"), tr,
+                tg, tb, 0.9f);
+  }
 
   // Data Selection
   const juce::Point<float> *dataPtr = nullptr;
@@ -1192,11 +1492,17 @@ void WraithFormAudioProcessorEditor::createShaders() {
     fireballShader = std::move(fireS);
   }
 
-  // Phase Correlation Shader
+  // Cloud Vortex Background Shader (circular view)
+  std::unique_ptr<juce::OpenGLShaderProgram> cloudS(
+      new juce::OpenGLShaderProgram(openGLContext));
+  if (cloudS->addVertexShader(vertexShader) &&
+      cloudS->addFragmentShader(cloudVortexFragmentShader) && cloudS->link()) {
+    cloudVortexShader = std::move(cloudS);
+  }
+
+  // Phase Correlation Shader (uses its own vertex shader)
   std::unique_ptr<juce::OpenGLShaderProgram> phaseS(
       new juce::OpenGLShaderProgram(openGLContext));
-  // Note: Phase Correlation Shader uses its OWN vertex shader, not the shared
-  // one!
   if (phaseS->addVertexShader(PhaseCorrelationShader::vertexShader) &&
       phaseS->addFragmentShader(PhaseCorrelationShader::fragmentShader) &&
       phaseS->link()) {
