@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(WraithForm VERSION 1.1.3)
+project(WraithForm VERSION 1.1.0)
 
 # JUCE Setup using FetchContent
 include(FetchContent)
@@ -25,6 +25,7 @@ juce_add_plugin(WraithForm
     PLUGIN_CODE WrFm
     FORMATS VST3 Standalone
     PRODUCT_NAME "WraithForm"
+    VERSION 1.1.0
     ICON_BIG "Source/icon.png"
 )
 
