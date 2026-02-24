@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(WraithForm VERSION 1.1.0)
+project(WraithForm VERSION 1.1.3)
 
 # JUCE Setup using FetchContent
 include(FetchContent)
