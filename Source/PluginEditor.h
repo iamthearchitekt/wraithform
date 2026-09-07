@@ -82,8 +82,8 @@ private:
   VisualizerMode currentMode = VisualizerMode::Loading;
 
   // Color Palette Mode
-  enum class ColorMode { Default, UV, Infrared, Heat, Plasma };
-  ColorMode currentColorMode = ColorMode::Default;
+  enum class ColorMode { Wraith, UV, Infrared, Heat, Plasma, Default = Wraith };
+  ColorMode currentColorMode = ColorMode::Wraith;
 
   bool isLissajousXY = false; // false = Goniometer (M/S), true = Classic Lissajous (L/R)
   bool isFullScreen = false;

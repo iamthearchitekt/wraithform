@@ -263,7 +263,7 @@ void WraithFormAudioProcessorEditor::mouseDown(const juce::MouseEvent &e) {
 
     // COLOR MODE Toggle (Beside QUAD)
     if (e.x > 150 && e.x < 225 && e.y > getHeight() - 40) {
-      if (currentColorMode == ColorMode::Default)
+      if (currentColorMode == ColorMode::Wraith)
         currentColorMode = ColorMode::UV;
       else if (currentColorMode == ColorMode::UV)
         currentColorMode = ColorMode::Infrared;
@@ -272,7 +272,7 @@ void WraithFormAudioProcessorEditor::mouseDown(const juce::MouseEvent &e) {
       else if (currentColorMode == ColorMode::Heat)
         currentColorMode = ColorMode::Plasma;
       else
-        currentColorMode = ColorMode::Default;
+        currentColorMode = ColorMode::Wraith;
       openGLContext.triggerRepaint();
       return;
     }
@@ -332,7 +332,7 @@ juce::Colour WraithFormAudioProcessorEditor::getThemeColour() const {
     return juce::Colour(0xFFFF6600); // Thermal magma flame orange
   else if (currentColorMode == ColorMode::Plasma)
     return juce::Colour(0xFF1EFF10); // Radioactive isotope green
-  return juce::Colour(0xFF00E5FF);   // Default cyber ice cyan
+  return juce::Colour(0xFFE0F5FF);   // Default Wraith pale spectral ice mist
 }
 
 // RGB triplet for OpenGL (passed to shader or glClearColor)
@@ -355,9 +355,9 @@ void WraithFormAudioProcessorEditor::getThemeRGB(float &r, float &g,
     g = 1.0f;
     b = 0.06f;
   } else {
-    // Default cyber ice cyan
-    r = 0.0f;
-    g = 0.90f;
+    // Default Wraith pale ethereal mist (low saturation, luminous spectral cyan-white)
+    r = 0.88f;
+    g = 0.96f;
     b = 1.0f;
   }
 }
@@ -599,8 +599,8 @@ void WraithFormAudioProcessorEditor::renderLoudnessDashboard() {
     // Pick swatch colour per mode
     juce::Colour swatchColor = getThemeColour();
     juce::String colorLabel;
-    if (currentColorMode == ColorMode::Default) {
-      colorLabel = "CYBER";
+    if (currentColorMode == ColorMode::Wraith) {
+      colorLabel = "WRAITH";
     } else if (currentColorMode == ColorMode::UV) {
       colorLabel = "UV";
     } else if (currentColorMode == ColorMode::Infrared) {
