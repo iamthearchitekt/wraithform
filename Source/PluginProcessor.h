@@ -57,6 +57,7 @@ public:
   static const int waveformHistorySize = 1024;
   std::vector<WaveformPoint> waveformHistory;
   std::atomic<int> waveformHistoryWriteIndex{0};
+  juce::String currentStandaloneInputName;
 
   // Metering Data
   std::atomic<float> peakL{0.0f}, peakR{0.0f};
@@ -89,7 +90,9 @@ private:
 
   // Integrated / Short-term Helpers
   std::vector<float> energyHistory; // 100ms blocks
-  std::vector<float> gatedEnergies; // For Integrated
+  double gatedEnergySum = 0.0;     // O(1) constant-time accumulator, no heap allocations
+  uint64_t gatedBlockCount = 0;
+  std::atomic<bool> resetLoudnessRequested{false};
   int energyHistoryIndex = 0;
   float blockAccumulator = 0;
   int blockSampleCount = 0;

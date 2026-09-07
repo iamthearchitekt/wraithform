@@ -34,6 +34,9 @@ private:
   // Shaders
   std::unique_ptr<juce::OpenGLShaderProgram> oscilloscopeShader;
   std::unique_ptr<juce::OpenGLShaderProgram> spectrogramShader;
+  std::unique_ptr<juce::OpenGLShaderProgram> vectorscopeShader;
+  std::unique_ptr<juce::OpenGLShaderProgram> vectorscopeGlowShader;
+  std::unique_ptr<juce::OpenGLShaderProgram> postProcessShader;
   std::unique_ptr<juce::OpenGLShaderProgram> circularShader;
   std::unique_ptr<juce::OpenGLShaderProgram> seratoShader;
   std::unique_ptr<juce::OpenGLShaderProgram> splashShader;
@@ -42,6 +45,9 @@ private:
   std::unique_ptr<juce::OpenGLShaderProgram> cloudVortexShader;
   std::unique_ptr<juce::OpenGLShaderProgram> cosmicFlareShader;
   std::unique_ptr<juce::OpenGLShaderProgram> volumetricExplosionShader;
+  std::unique_ptr<juce::OpenGLShaderProgram> liquidFireShader;
+
+  juce::OpenGLFrameBuffer visualizerFBO;
 
   void createShaders();
   void renderSpectrogram();
@@ -49,6 +55,7 @@ private:
   void renderCircularOscilloscope();
   void renderSeratoWaveform();
   void renderPhaseMeter();
+  void renderVectorscope();
   void renderMeters();
   void renderLoudnessDashboard();
   void renderCosmicFlare();
@@ -66,6 +73,7 @@ private:
     Serato,
     Spectrogram,
     PhaseMeter,
+    Vectorscope,
     CosmicFlare,
     VolumetricExplosion,
     QuadView
@@ -77,6 +85,7 @@ private:
   enum class ColorMode { Default, UV, Infrared, Heat, Plasma };
   ColorMode currentColorMode = ColorMode::Default;
 
+  bool isLissajousXY = false; // false = Goniometer (M/S), true = Classic Lissajous (L/R)
   bool isFullScreen = false;
   juce::Rectangle<int> quadBtnRect, multiBtnRect, resetBtnRect,
       fullScreenBtnRect, zoomBtnRect;
@@ -132,6 +141,16 @@ private:
   std::unique_ptr<juce::dsp::WindowingFunction<float>> windowingFunction;
   std::vector<float> fftBuffer;
   std::vector<float> fftOutput;
+  std::atomic<int> pendingFFTOrder{0};
+  void applyPendingFFTSize();
+
+  // Persistent Scratch Buffers (eliminates per-frame heap churn on render thread)
+  std::vector<float> wideLBuffer, wideRBuffer, wideSumBuffer;
+  std::vector<float> phaseLBuffer, phaseRBuffer;
+  std::vector<float> fftInLBuffer, fftInRBuffer;
+  std::vector<juce::Point<float>> hardVectorsBuffer;
+  std::vector<juce::Point<float>> vectorScopeData;
+
   static const int fftOrder = 11; // 2048 points
   static const int fftSize = 1 << fftOrder;
 
@@ -144,6 +163,20 @@ private:
   float waveformZoom = 4.0f;
 
   // Dashboard button hitboxes
+
+  void applyUsableAreaMargins(int* vp) const {
+    if (currentMode != VisualizerMode::QuadView) {
+      float desktopScale = (float)openGLContext.getRenderingScale();
+      int topM = (int)(35 * desktopScale);
+      int botM = (int)(35 * desktopScale);
+      int sideM = (int)(100 * sideBarAnimation * desktopScale);
+      vp[1] += botM;
+      vp[2] -= sideM;
+      vp[3] -= (topM + botM);
+    }
+  }
+
+  std::atomic<bool> triggerSpectrogramRefresh{false};
 
   std::atomic<int> numDetachedWindows{0};
 

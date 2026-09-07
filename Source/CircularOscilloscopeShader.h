@@ -1,6 +1,7 @@
 #pragma once
 
 const static char *circularOscilloscopeFragmentShader = R"glsl(
+    #version 130
     #ifdef GL_ES
     precision highp float;
     #else
@@ -26,21 +27,28 @@ const static char *circularOscilloscopeFragmentShader = R"glsl(
     const float PI = 3.14159265359;
     const float TWO_PI = 6.28318530718;
 
+    float diffSlope = 0.0;
+
     float sampleWave(float x) {
-        return texture2D(u_audioData, vec2(clamp(x, 0.0, 1.0), 0.5)).r;
+        float fx = fract(x);
+        float val = texture(u_audioData, vec2(fx, 0.5)).r;
+        return val + (diffSlope * fx);
     }
 
-    varying vec2 v_uv;
+    in vec2 v_uv;
+    out vec4 fragColor;
 
     void main()
     {
+        // Compute tilt slope once per fragment
+        float startVal = texture(u_audioData, vec2(0.0, 0.5)).r;
+        float endVal   = texture(u_audioData, vec2(0.999, 0.5)).r;
+        diffSlope = startVal - endVal;
+
         vec2 uv = v_uv;
         
         // Remap UV to centered coordinates -1..1
         vec2 p = uv * 2.0 - 1.0;
-        
-        // Nudge center to the left to compensate for sidebar
-        p.x += 0.12;
         
         // Correct aspect ratio so the circle is perfect
         if (u_resolution.x > u_resolution.y) {
@@ -52,54 +60,48 @@ const static char *circularOscilloscopeFragmentShader = R"glsl(
         // Polar coordinates
         float r = length(p);
         float a = atan(p.y, p.x); // -PI to PI
+        
+        // Rotate the anchor point continuously using u_time so the seam becomes a dynamic part of the animation
+        a -= (PI / 2.0) - (u_time * 2.25);
 
         // Map angle to 0..1 for texture sampling
-        // We want the circle to close, so 0 and 1 should meet.
-        // atan returns -PI..PI. Map to 0..1
-        float angleNorm = (a + PI) / TWO_PI;
+        // We revert back to a standard continuous wrap to preserve the concept of a single continuous circular wave
+        float angleNorm = fract((a + PI) / TWO_PI);
 
-        // --- Low frequency smoothing (same as linear) ---
-        // Note: For a faster implementation, we could sample less, but let's stick to the high quality one.
-        // Wrap around logic is needed for perfect smoothing at the seam, 
-        // but clamp/wrap on texture might handle it if set to GL_REPEAT (we used CLAMP_TO_EDGE).
-        // Since we used CLAMP_TO_EDGE, we might see a seam. 
-        // For now, let's just clamp via the sampleWave function logic or rely on the visual continuity.
-        // Ideally we'd wrap 'x'.
-        
+        // Read raw audio wave
         float w0 = sampleWave(angleNorm);
 
-        float dx = window;
-        float wSm = 0.0;
-        
-        // Simple manual unroll as in original
-        // Ideally we wrap the index for smoothing across the seam: fract(angleNorm + offset)
-        // But sampleWave clamps. Let's try to wrap manually for smoothness.
-        
-        for (int i = -4; i <= 4; i++) {
-             float xOff = angleNorm + float(i) * dx;
-             // Wrap 0..1
-             xOff = xOff - floor(xOff); 
-             wSm += sampleWave(xOff);
-        }
+        // Calculate a heavily smoothed version of the wave to find the "lopsided" low frequency bulge
+        float dx = window * 2.0; // Use a wider window to deeply capture the macro shape
+        float wSm = sampleWave(angleNorm - 4.0*dx) + sampleWave(angleNorm - 3.0*dx) +
+                    sampleWave(angleNorm - 2.0*dx) + sampleWave(angleNorm - 1.0*dx) +
+                    sampleWave(angleNorm) + sampleWave(angleNorm + 1.0*dx) +
+                    sampleWave(angleNorm + 2.0*dx) + sampleWave(angleNorm + 3.0*dx) +
+                    sampleWave(angleNorm + 4.0*dx);
         wSm /= 9.0;
 
-        float w = mix(w0, wSm, lowpass);
+        // HIGH-PASS FILTER: Subtract the slow, lopsided bulge from the raw wave.
+        // This leaves beautifully balanced high-frequency ripples that center perfectly on the circle line!
+        float highPass = w0 - wSm;
 
-        // Amplitude -1..1
-        float amp = (w - 0.5) * 2.0; 
-        amp *= gain;
+        // Calculate the amplitude of the ripples
+        float amp = highPass * gain * 0.40; // Scaled up slightly to compensate for removed low-end
 
-        // Base radius for the circle
-        float baseRadius = 0.5;
+        // UNIFORM AUDIO PRESSURE (Normalized Sub-Bass)
+        // Instead of the sub-frequencies bulging one side, they expand the entire circle equally!
+        // This keeps the circle perfectly round while still reacting massively to the beat.
+        float uniformBassExpansion = u_bassEnergy * 0.15;
+
+        // Base radius for the circle starts a bit smaller so it has room to expand outward
+        float baseRadius = 0.40 + uniformBassExpansion;
         
-        // Modulate radius by amplitude + bass energy
         // On a bass hit: ring breathes outward more dramatically
         float radiusScale = 0.18 + 0.12 * u_bassEnergy;
         float targetRadius = baseRadius + amp * radiusScale;
 
         // --- Rendering ---
 
-        float energy = clamp(abs(amp), 0.0, 1.0);
+        float energy = abs(amp);
         float thick = thickness * (1.0 + energy * 1.5);
 
         // Distance field to the target radius ring
@@ -133,11 +135,12 @@ const static char *circularOscilloscopeFragmentShader = R"glsl(
         
         vec3 finalColor = u_glowColor * intensity + u_glowColor * bgGlow;
 
-        gl_FragColor = vec4(finalColor, 1.0);
+        fragColor = vec4(finalColor, 1.0);
     }
 )glsl";
 
 const static char *fireBallFragmentShader = R"glsl(
+    #version 130
     #ifdef GL_ES
     precision highp float;
     #else
@@ -249,11 +252,13 @@ const static char *fireBallFragmentShader = R"glsl(
 
     float RenderScene(vec3 position, out float distance)
     {
-        // Density: quiet=1.5 (small, calm), bass-hit=5.0 (large, turbulent)
-        float liveDensity = 1.5 + u_audioEnergy * 3.5;
-        // Depth: quiet=0.04 (smooth ball), bass-hit=0.28 (spiky corona)
-        float liveDepth   = 0.025 + u_audioEnergy * 0.18;
-        float noise = Turbulence(position * liveDensity + vec3(rateZ, rateX, rateY)*u_time, 0.1, 1.5, 0.03) * liveDepth;
+        // Density: quiet=1.5 (small, calm), bass-hit=5.0 (large, turbulent) -> Decreased to 1.5 for extra calmness
+        float liveDensity = 1.5 + u_audioEnergy * 1.5;
+        // Depth: quiet=0.04 (smooth ball), bass-hit=0.28 (spiky corona) -> Decreased to 0.08 for extremely smooth edges
+        float liveDepth   = 0.025 + u_audioEnergy * 0.08;
+        
+        // Return to standard u_time (which is accumulated fluidly in C++)
+        float noise = Turbulence(position * liveDensity + vec3(rateZ, rateX, rateY) * u_time, 0.1, 1.5, 0.03) * liveDepth;
         noise = saturate(abs(noise));
         distance = SphereDist(position) - noise;
         return noise;
@@ -284,16 +289,14 @@ const static char *fireBallFragmentShader = R"glsl(
         return true;
     }
 
-    varying vec2 v_uv;
+    in vec2 v_uv;
+    out vec4 fragColor;
 
     void main(void)
     {
         // Use UV coordinates (0..1) directly
         // Map to -1..1
         vec2 p = v_uv * 2.0 - 1.0;
-        
-        // Nudge center to the left to compensate for sidebar
-        p.x += 0.12;
 
         // Correct aspect ratio using u_resolution
         if (u_resolution.x > u_resolution.y) {
@@ -316,6 +319,6 @@ const static char *fireBallFragmentShader = R"glsl(
         {
             col = March(origin, rd);
         }
-        gl_FragColor = col;
+        fragColor = col;
     }
 )glsl";

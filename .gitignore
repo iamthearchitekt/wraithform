@@ -34,3 +34,7 @@ cmake_install.cmake
 # OS
 .DS_Store
 Thumbs.db
+
+# Logs & Diagnostics
+*.log
+crash_*.txt

@@ -111,7 +111,8 @@ void WraithFormAudioProcessor::prepareToPlay(double sampleRate,
 
   // Clear analysis state
   energyHistory.assign(30, 0.0f);
-  gatedEnergies.clear();
+  gatedEnergySum = 0.0;
+  gatedBlockCount = 0;
   energyHistoryIndex = 0;
   blockAccumulator = 0;
   blockSampleCount = 0;
@@ -129,20 +130,15 @@ bool WraithFormAudioProcessor::isBusesLayoutSupported(
   juce::ignoreUnused(layouts);
   return true;
 #else
-  // This is the place where you check if the layout is supported.
-  // In this template code we only support mono or stereo.
-  // Some plugin hosts, such as certain GarageBand versions, will only
-  // load plugins that support stereo bus layouts.
-  if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::mono() &&
-      layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
+  // Allow mono or stereo inputs
+  if (layouts.getMainInputChannelSet() != juce::AudioChannelSet::mono() &&
+      layouts.getMainInputChannelSet() != juce::AudioChannelSet::stereo() &&
+      layouts.getMainInputChannelSet() != juce::AudioChannelSet::disabled())
     return false;
 
-  // This checks if the input layout matches the output layout
-#if !JucePlugin_IsSynth
-  if (layouts.getMainOutputChannelSet() != layouts.getMainInputChannelSet())
-    return false;
-#endif
-
+  // We are a visualizer. We don't strictly care what the output layout is,
+  // because in standalone mode we mute it anyway, and in plugin mode we just
+  // pass through whatever we can. Allow mismatched input/output counts!
   return true;
 #endif
 }
@@ -153,6 +149,18 @@ void WraithFormAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
   juce::ScopedNoDenormals noDenormals;
   auto totalNumInputChannels = getTotalNumInputChannels();
   auto totalNumOutputChannels = getTotalNumOutputChannels();
+
+  if (resetLoudnessRequested.exchange(false, std::memory_order_acq_rel)) {
+    gatedEnergySum = 0.0;
+    gatedBlockCount = 0;
+    energyHistory.assign(30, 0.0f);
+    energyHistoryIndex = 0;
+    blockAccumulator = 0.0f;
+    blockSampleCount = 0;
+    lufsIntegrated.store(-100.0f, std::memory_order_relaxed);
+    lufsShortTerm.store(-100.0f, std::memory_order_relaxed);
+    lufsMomentary.store(-100.0f, std::memory_order_relaxed);
+  }
 
   // In case we have more outputs than inputs, this code clears any output
   // channels that didn't contain input data, (because these aren't
@@ -303,19 +311,24 @@ void WraithFormAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
       float blockLUFS =
           -0.691f + 10.0f * std::log10(std::max(1e-9f, blockEnergy));
       if (blockLUFS > -70.0f) {
-        gatedEnergies.push_back(blockEnergy);
-
-        float intSum = 0;
-        for (float e : gatedEnergies)
-          intSum += e;
+        gatedEnergySum += blockEnergy;
+        gatedBlockCount++;
+        double meanEnergy = gatedEnergySum / (double)gatedBlockCount;
         float intLUFS =
-            -0.691f + 10.0f * std::log10(std::max(
-                                  1e-9f, intSum / (float)gatedEnergies.size()));
-        lufsIntegrated.store(intLUFS);
+            -0.691f + 10.0f * std::log10(std::max(1e-9f, (float)meanEnergy));
+        lufsIntegrated.store(intLUFS, std::memory_order_relaxed);
       }
 
       blockAccumulator = 0;
       blockSampleCount = 0;
+    }
+
+    // --- Mute Standalone Output ---
+    // If we are running as a standalone app, we are likely listening to a WASAPI loopback 
+    // or a microphone. We MUST mute the output to prevent a nasty echo or feedback loop 
+    // over the computer's speakers! (VST/AU plugins will still pass audio through normally).
+    if (wrapperType == juce::AudioProcessor::wrapperType_Standalone) {
+      buffer.clear();
     }
 
     peakL.store(pL);
@@ -323,8 +336,7 @@ void WraithFormAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
     rmsL.store(std::sqrt(sumSqL / (float)numSamples));
     rmsR.store(std::sqrt(sumSqR / (float)numSamples));
   }
-  // Mute output
-  buffer.clear();
+  // Audio now passes through unmodified
 }
 
 bool WraithFormAudioProcessor::hasEditor() const {
@@ -336,10 +348,7 @@ juce::AudioProcessorEditor *WraithFormAudioProcessor::createEditor() {
 }
 
 void WraithFormAudioProcessor::resetLoudnessStats() {
-  gatedEnergies.clear();
-  energyHistory.assign(30, 0.0f);
-  lufsIntegrated.store(-100.0f);
-  lufsShortTerm.store(-100.0f);
+  resetLoudnessRequested.store(true, std::memory_order_release);
 }
 
 void WraithFormAudioProcessor::getStateInformation(

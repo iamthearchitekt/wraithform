@@ -2,10 +2,12 @@
 #include "CircularOscilloscopeShader.h"
 #include "CloudVortexShader.h"
 #include "CosmicFlareShader.h"
+#include "LiquidFireShader.h"
 #include "PhaseCorrelationShader.h"
 #include "PluginProcessor.h"
 #include "SpectrogramShader.h"
 #include "SplashCanvas.h"
+#include "VectorscopeShader.h"
 #include "VisualizerShader.h"
 #include "VolumetricExplosionShader.h"
 #include "WaveformShader.h"
@@ -13,28 +15,26 @@
 #include <juce_opengl/juce_opengl.h>
 
 //==============================================================================
-void logToDesktop(const juce::String &msg) {
-  juce::File f(juce::File::getSpecialLocation(juce::File::userDesktopDirectory)
-                   .getChildFile("wraith_debug.txt"));
-  f.appendText(msg + "\n");
-}
+
 
 void WraithFormAudioProcessorEditor::updateFFTSize(FFTSize newSize) {
   currentFFTSize = newSize;
-  int order = (int)newSize;
-  int size = 1 << order;
+  pendingFFTOrder.store((int)newSize, std::memory_order_release);
+}
 
-  // Thread safety: we are on message thread here (mouseDown)
-  // Rendering is on OpenGL thread.
-  // Proper way is to signal OpenGL thread to recreate.
-  // For now, recreate directly as OpenGL thread usually checks for null or
-  // valid state.
+void WraithFormAudioProcessorEditor::applyPendingFFTSize() {
+  int order = pendingFFTOrder.exchange(0, std::memory_order_acq_rel);
+  if (order <= 0) return;
+
+  int size = 1 << order;
   forwardFFT = std::make_unique<juce::dsp::FFT>(order);
   windowingFunction = std::make_unique<juce::dsp::WindowingFunction<float>>(
       size, juce::dsp::WindowingFunction<float>::blackmanHarris);
 
-  fftBuffer.resize(size * 2, 0.0f);
-  fftOutput.resize(size / 2, 0.0f);
+  fftBuffer.assign(size * 2, 0.0f);
+  fftOutput.assign(size / 2, 0.0f);
+  fftInLBuffer.resize(size, 0.0f);
+  fftInRBuffer.resize(size, 0.0f);
 }
 
 WraithFormAudioProcessorEditor::DetachedWindow::DetachedWindow(
@@ -152,7 +152,7 @@ WraithFormAudioProcessorEditor::WraithFormAudioProcessorEditor(
   // Setup OpenGL
   openGLContext.setRenderer(this);
   openGLContext.attachTo(*this);
-  openGLContext.setContinuousRepainting(true); // Attempt 60FPS or generic VSync
+  openGLContext.setContinuousRepainting(true);
 
   // Audio Buffers setup
   int initialSize = 1 << (int)FFTSize::AllRound;
@@ -160,6 +160,18 @@ WraithFormAudioProcessorEditor::WraithFormAudioProcessorEditor(
   phaseData.resize(textureSize, {0.0f, 0.0f}); // Init phase data
   fftBuffer.resize(initialSize * 2, 0.0f);
   fftOutput.resize(initialSize / 2, 0.0f);
+
+  // Pre-allocate scratch buffers to eliminate heap allocations in render loop
+  const int searchSize = textureSize * 2;
+  wideLBuffer.resize(searchSize, 0.0f);
+  wideRBuffer.resize(searchSize, 0.0f);
+  wideSumBuffer.resize(searchSize, 0.0f);
+  phaseLBuffer.resize(1024, 0.0f);
+  phaseRBuffer.resize(1024, 0.0f);
+  fftInLBuffer.resize(1 << (int)FFTSize::Harmonic, 0.0f);
+  fftInRBuffer.resize(1 << (int)FFTSize::Harmonic, 0.0f);
+  hardVectorsBuffer.reserve(1024);
+  vectorScopeData.resize(1024, {0.0f, 0.0f});
 
   waveformHistory.resize(historySize, {0.0f, 0.0f, 0.0f, 0.0f, 0.0f});
 
@@ -194,16 +206,7 @@ WraithFormAudioProcessorEditor::WraithFormAudioProcessorEditor(
     }
   }
 
-  logToDesktop("Constructor: Splash Valid? " +
-               juce::String(splashImage.isValid() ? "YES" : "NO"));
-  if (splashImage.isValid()) {
-    logToDesktop("Splash Dims: " + juce::String(splashImage.getWidth()) + "x" +
-                 juce::String(splashImage.getHeight()));
-  }
-
-  // Fallback: If Base64 fails (unlikely), we just have no splash.
-  // logToDesktop("Constructor: Splash Valid? " +
-  // juce::String(splashImage.isValid() ? "YES" : "NO"));
+  // Fallback: If Base64 fails, we just have no splash.
 }
 
 WraithFormAudioProcessorEditor::~WraithFormAudioProcessorEditor() {}
@@ -236,18 +239,21 @@ void WraithFormAudioProcessorEditor::mouseDown(const juce::MouseEvent &e) {
         updateFFTSize(FFTSize::Harmonic);
       else
         updateFFTSize(FFTSize::Transient);
+    } else if (currentMode == VisualizerMode::Vectorscope) {
+      isLissajousXY = !isLissajousXY;
+      openGLContext.triggerRepaint();
     }
   } else if (e.mods.isMiddleButtonDown()) {
     isFrozen = !isFrozen;
   } else {
     // RESET Button Hitbox (Bottom Left)
-    if (e.x > 20 && e.x < 70 && e.y > getHeight() - 40) {
+    if (e.x > 20 && e.x < 75 && e.y > getHeight() - 40) {
       audioProcessor.resetLoudnessStats();
       return;
     }
 
     // QUAD View Toggle (Beside Reset)
-    if (e.x > 80 && e.x < 140 && e.y > getHeight() - 40) {
+    if (e.x > 80 && e.x < 145 && e.y > getHeight() - 40) {
       currentMode = (currentMode == VisualizerMode::QuadView)
                         ? VisualizerMode::Oscilloscope
                         : VisualizerMode::QuadView;
@@ -255,21 +261,8 @@ void WraithFormAudioProcessorEditor::mouseDown(const juce::MouseEvent &e) {
       return;
     }
 
-    // ZOOM Toggle (Beside QUAD/Color in Linear/Quad Mode)
-    if (!zoomBtnRect.isEmpty() && zoomBtnRect.contains(e.getPosition())) {
-      if (waveformZoom < 2.0f)
-        waveformZoom = 2.0f;
-      else if (waveformZoom < 4.0f)
-        waveformZoom = 4.0f;
-      else
-        waveformZoom = 1.0f;
-
-      openGLContext.triggerRepaint();
-      return;
-    }
-
     // COLOR MODE Toggle (Beside QUAD)
-    if (e.x > 148 && e.x < 218 && e.y > getHeight() - 40) {
+    if (e.x > 150 && e.x < 225 && e.y > getHeight() - 40) {
       if (currentColorMode == ColorMode::Default)
         currentColorMode = ColorMode::UV;
       else if (currentColorMode == ColorMode::UV)
@@ -284,14 +277,6 @@ void WraithFormAudioProcessorEditor::mouseDown(const juce::MouseEvent &e) {
       return;
     }
 
-    // MULTI Window Toggle (Beside Quad) - DISABLED
-    if (e.x > 140 && e.x < 190 && e.y > getHeight() - 40) {
-      // toggleDetachedWindows();
-      return;
-    }
-
-    // FULL SCREEN Toggle REMOVED
-
     // Left click cycles modes
     if (currentMode == VisualizerMode::Oscilloscope)
       currentMode = VisualizerMode::Spectrogram;
@@ -302,6 +287,8 @@ void WraithFormAudioProcessorEditor::mouseDown(const juce::MouseEvent &e) {
     else if (currentMode == VisualizerMode::Circular)
       currentMode = VisualizerMode::PhaseMeter;
     else if (currentMode == VisualizerMode::PhaseMeter)
+      currentMode = VisualizerMode::Vectorscope;
+    else if (currentMode == VisualizerMode::Vectorscope)
       currentMode = VisualizerMode::CosmicFlare;
     else if (currentMode == VisualizerMode::CosmicFlare)
       currentMode = VisualizerMode::VolumetricExplosion;
@@ -310,7 +297,6 @@ void WraithFormAudioProcessorEditor::mouseDown(const juce::MouseEvent &e) {
     else if (currentMode == VisualizerMode::QuadView)
       currentMode = VisualizerMode::Oscilloscope;
 
-    createShaders();
     openGLContext.triggerRepaint();
   }
 }
@@ -325,52 +311,53 @@ void WraithFormAudioProcessorEditor::toggleDetachedWindows() {
 int WraithFormAudioProcessorEditor::findTriggerPoint(
     const std::vector<float> &data, int size) {
   // Simple zero-crossing trigger (rising edge)
-  // Search in the first half of the search buffer
+  // Search backwards from the most recent valid trigger point to minimize latency!
   float threshold = 0.505f; // Since zero is 0.5 in encoded visualizer buffer
-  for (int i = 1; i < size / 2; ++i) {
+  for (int i = (size / 2) - 1; i >= 1; --i) {
     if (data[i] > threshold && data[i - 1] <= threshold) {
       return i;
     }
   }
-  return 0;
+  // If no trigger is found, default to the most recent block to avoid latency
+  return (size / 2) - 1;
 }
 
 // Returns the active skin colour as a JUCE Colour
 juce::Colour WraithFormAudioProcessorEditor::getThemeColour() const {
   if (currentColorMode == ColorMode::UV)
-    return juce::Colour(0xFF6103FF); // Deep blue-violet (UV)
+    return juce::Colour(0xFF7300FF); // Deep electric UV / blacklight violet
   else if (currentColorMode == ColorMode::Infrared)
-    return juce::Colour(0xFFFF3A28); // Deep Red
+    return juce::Colour(0xFFFF0012); // True pure FLIR crimson / laser red (0% green)
   else if (currentColorMode == ColorMode::Heat)
-    return juce::Colour(0xFFFF7200); // Flame Orange
+    return juce::Colour(0xFFFF6600); // Thermal magma flame orange
   else if (currentColorMode == ColorMode::Plasma)
-    return juce::Colour(0xFF33FF11); // Radioactive Green
-  return juce::Colour(0xFFD5FFFF);   // Default Ice Blue
+    return juce::Colour(0xFF1EFF10); // Radioactive isotope green
+  return juce::Colour(0xFF00E5FF);   // Default cyber ice cyan
 }
 
 // RGB triplet for OpenGL (passed to shader or glClearColor)
 void WraithFormAudioProcessorEditor::getThemeRGB(float &r, float &g,
                                                  float &b) const {
   if (currentColorMode == ColorMode::UV) {
-    r = 0.38f;
-    g = 0.02f;
+    r = 0.45f;
+    g = 0.0f;
     b = 1.0f;
   } else if (currentColorMode == ColorMode::Infrared) {
     r = 1.0f;
-    g = 0.23f;
-    b = 0.16f;
+    g = 0.0f;
+    b = 0.02f; // Pure monochromatic red; zero green contamination
   } else if (currentColorMode == ColorMode::Heat) {
     r = 1.0f;
-    g = 0.45f;
-    b = 0.05f;
+    g = 0.40f;
+    b = 0.0f;
   } else if (currentColorMode == ColorMode::Plasma) {
-    r = 0.2f;
+    r = 0.12f;
     g = 1.0f;
-    b = 0.07f;
-  } // Radioactive Green
-  else {
-    r = 0.835f;
-    g = 1.0f;
+    b = 0.06f;
+  } else {
+    // Default cyber ice cyan
+    r = 0.0f;
+    g = 0.90f;
     b = 1.0f;
   }
 }
@@ -395,7 +382,7 @@ void WraithFormAudioProcessorEditor::renderMeters() {
 
   // Background
   glScissor(x_start, 0, sidebarWidth, h);
-  glClearColor(0.0f, 0.0f, 0.0f, 0.45f); // Transparent Sidebar
+  glClearColor(0.0f, 0.0f, 0.0f, 0.5f); // 50% Transparent Sidebar
   glClear(GL_COLOR_BUFFER_BIT);
 
   // Meter Data from Processor
@@ -514,14 +501,9 @@ void WraithFormAudioProcessorEditor::renderLoudnessDashboard() {
   float scale = desktopScale;
   int w = getWidth();
   int h = getHeight();
-  int dashH = (int)(55 * scale);
+  int dashH = (int)(35 * scale);
 
-  // Background Bar (Top)
-  glEnable(GL_SCISSOR_TEST);
-  glScissor(0, (int)((h - 55) * scale), (int)(w * scale), (int)(55 * scale));
-  glClearColor(0.0f, 0.0f, 0.0f, 0.45f); // Transparent Dashboard
-  glClear(GL_COLOR_BUFFER_BIT);
-  glDisable(GL_SCISSOR_TEST);
+  // We completely removed the top bar background here so the visualizer shows through 100%
 
   std::unique_ptr<juce::LowLevelGraphicsContext> glContext(
       juce::createOpenGLGraphicsContext(openGLContext, (int)(w * scale),
@@ -533,15 +515,22 @@ void WraithFormAudioProcessorEditor::renderLoudnessDashboard() {
     auto drawMetric = [&](int x, int y, const char *label, float value) {
       juce::String text = (value <= -90.0f) ? "-inf" : juce::String(value, 1);
       juce::Colour tc = getThemeColour();
+      
+      // Label securely tucked into the top half
       g.setColour(tc.withAlpha(0.6f));
-      g.setFont(9.0f);
-      g.drawText(label, x, y - 14, 120, 10, juce::Justification::left);
+      g.setFont(8.0f);
+      g.drawText(label, x, y - 18, 120, 10, juce::Justification::bottomLeft);
+      
+      // Numbers elegantly tucked into the bottom half
       g.setColour(tc);
       g.setFont(16.0f);
-      g.drawText(text, x, y, 120, 20, juce::Justification::left);
-      g.setFont(9.0f);
+      int tW = text.length() * 9; // Approximate width for 16pt font
+      g.drawText(text, x, y - 6, tW + 5, 20, juce::Justification::topLeft);
+      
+      // LUFS suffix perfectly aligned
+      g.setFont(8.0f);
       g.setColour(tc.withAlpha(0.4f));
-      g.drawText("LUFS", x + 48, y + 4, 30, 10, juce::Justification::left);
+      g.drawText("LUFS", x + tW + 5, y, 30, 10, juce::Justification::bottomLeft);
     };
 
     int startX = 20;
@@ -569,6 +558,17 @@ void WraithFormAudioProcessorEditor::renderLoudnessDashboard() {
                           juce::String(audioProcessor.truePeakR.load(), 1);
     g.drawText(tpText, tpX, yOff, 120, 20, juce::Justification::left);
 
+    // Standalone Input Display (Top Middle)
+    if (audioProcessor.wrapperType == juce::AudioProcessor::wrapperType_Standalone) {
+        if (audioProcessor.currentStandaloneInputName.isNotEmpty()) {
+            g.setFont(10.0f);
+            g.setColour(tc.withAlpha(0.4f));
+            juce::String inStr = "AUDIO INPUT: " + audioProcessor.currentStandaloneInputName.toUpperCase();
+            juce::Rectangle<int> centerRect(0, 5, w, 25);
+            g.drawText(inStr, centerRect, juce::Justification::centred, true);
+        }
+    }
+
     // Reset Button
     int footerY = h - 35;
     juce::Rectangle<int> resetBtnRect = {20, footerY, 55, 20};
@@ -587,7 +587,7 @@ void WraithFormAudioProcessorEditor::renderLoudnessDashboard() {
                                                         : tc.withAlpha(0.6f));
     g.drawRect(quadBtnRect, 1);
     g.setFont(10.0f);
-    g.drawText("QUAD", quadBtnRect, juce::Justification::centred);
+    g.drawText("MULTI", quadBtnRect, juce::Justification::centred);
 
     // COLOR MODE Button (Beside QUAD)
     juce::Rectangle<int> colorBtnRect = {150, footerY, 65, 20};
@@ -597,22 +597,17 @@ void WraithFormAudioProcessorEditor::renderLoudnessDashboard() {
     g.fillRect(colorBtnRect);
 
     // Pick swatch colour per mode
-    juce::Colour swatchColor;
+    juce::Colour swatchColor = getThemeColour();
     juce::String colorLabel;
     if (currentColorMode == ColorMode::Default) {
-      swatchColor = juce::Colour(0xFFD5FFFF);
-      colorLabel = "DEFAULT";
+      colorLabel = "CYBER";
     } else if (currentColorMode == ColorMode::UV) {
-      swatchColor = juce::Colour(0xFF6103FF);
       colorLabel = "UV";
     } else if (currentColorMode == ColorMode::Infrared) {
-      swatchColor = juce::Colour(0xFFFF3A28);
       colorLabel = "INFRA";
     } else if (currentColorMode == ColorMode::Plasma) {
-      swatchColor = juce::Colour(0xFF33FF11);
       colorLabel = "PLASMA";
     } else {
-      swatchColor = juce::Colour(0xFFFF7200);
       colorLabel = "HEAT";
     }
     g.setColour(swatchColor.withAlpha(0.85f));
@@ -620,9 +615,9 @@ void WraithFormAudioProcessorEditor::renderLoudnessDashboard() {
     g.setFont(10.0f);
     g.drawText(colorLabel, colorBtnRect, juce::Justification::centred);
 
-    // ZOOM Button (Visible in Oscilloscope, Serato and QuadView)
+    // ZOOM Button (Removed per user request - locked to 4x)
+    /*
     if (currentMode == VisualizerMode::Oscilloscope ||
-        currentMode == VisualizerMode::Serato ||
         currentMode == VisualizerMode::QuadView) {
       zoomBtnRect = {225, footerY, 70, 20};
       g.setColour(tc.withAlpha(0.6f));
@@ -633,6 +628,8 @@ void WraithFormAudioProcessorEditor::renderLoudnessDashboard() {
     } else {
       zoomBtnRect = {}; // Inactive
     }
+    */
+    zoomBtnRect = {}; // Ensure always inactive
 
     // MULTI BUTTON REMOVED
   }
@@ -688,8 +685,6 @@ void WraithFormAudioProcessorEditor::newOpenGLContextCreated() {
 void WraithFormAudioProcessorEditor::renderOpenGL() {
   using namespace juce::gl;
 
-  jassert(OpenGLHelpers::isContextActive());
-
   // ALWAYS update audio data before rendering any mode
   updateAudioData();
 
@@ -710,8 +705,9 @@ void WraithFormAudioProcessorEditor::renderOpenGL() {
     float tunnelSpeed = 0.15f + 9.85f * std::pow(rmsNorm, 2.5f);
     cloudTunnelTime += deltaT * tunnelSpeed;
 
-    // Cosmic Flare Speed: also reactive to bass energy
-    float flareSpeed = 0.2f + 2.8f * std::pow(smoothedBassEnergy, 2.0f);
+    // Cosmic Flare / Fireball Speed: subtly reactive to bass energy for a
+    // morphous feel
+    float flareSpeed = 0.4f + 0.8f * smoothedBassEnergy;
     cosmicFlareTime += deltaT * flareSpeed;
 
     // Stable Time: Constant speed for non-reactive elements (like cloud hue)
@@ -725,15 +721,17 @@ void WraithFormAudioProcessorEditor::renderOpenGL() {
     for (int i = 1; i < bgBins; ++i)
       bassEnergy += fftOutput[i];
     bassEnergy = juce::jlimit(0.0f, 1.0f, bassEnergy / (float)(bgBins - 1));
-    // Smooth it gently so visuals don't snap
-    smoothedBassEnergy = smoothedBassEnergy * 0.88f + bassEnergy * 0.12f;
+    // Smooth it gently so visuals don't snap too hard, but keep it snappy
+    smoothedBassEnergy = smoothedBassEnergy * 0.65f + bassEnergy * 0.35f;
 
-    // Kick energy for more peaky effects (fireball)
+    // Kick and Snare energy for more peaky effects (fireball)
     float kickEnergy = 0.0f;
-    int kickBins = std::min(6, (int)fftOutput.size());
+    int kickBins = std::min(
+        15, (int)fftOutput
+                .size()); // Bins 1-15 cover up to ~350Hz (snare fundamental)
     for (int i = 1; i < kickBins; ++i)
       kickEnergy = std::max(kickEnergy, fftOutput[i]);
-    smoothedKickEnergy = smoothedKickEnergy * 0.8f + kickEnergy * 0.2f;
+    smoothedKickEnergy = smoothedKickEnergy * 0.5f + kickEnergy * 0.5f;
   }
 
   // SIDEBAR ANIMATION (Self-driven without Timer)
@@ -742,24 +740,23 @@ void WraithFormAudioProcessorEditor::renderOpenGL() {
   else if (!isSideBarVisible && sideBarAnimation > 0.0f)
     sideBarAnimation = std::max(0.0f, sideBarAnimation - 0.05f);
 
-  // Clear background to Black (CRITICAL FOR STARTUP GLITCH FIX)
+  // Render directly to the default framebuffer (no FBO intermediary)
+  float desktopScale = (float)openGLContext.getRenderingScale();
+  int w = (int)(getWidth() * desktopScale);
+  int h = (int)(getHeight() * desktopScale);
+
+  // Clear background to black
+  glViewport(0, 0, w, h);
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
 
   // Enable Alpha Blending
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-  // FORCE RESET VIEWPORT/SCISSOR to full window
-  // This ensures no leftover state from QuadView or other overlays affects the
-  // main render
-  float desktopScale = (float)openGLContext.getRenderingScale();
-  glViewport(0, 0, (int)(getWidth() * desktopScale),
-             (int)(getHeight() * desktopScale));
   glDisable(GL_SCISSOR_TEST);
-  glDisable(GL_CULL_FACE); // PREVENT DIAGONAL LINE ARTIFACTS
+  glDisable(GL_CULL_FACE);
 
-  // 1. Render Active Mode
+  // Render active visualizer mode
   if (currentMode == VisualizerMode::Spectrogram)
     renderSpectrogram();
   else if (currentMode == VisualizerMode::Circular)
@@ -767,7 +764,9 @@ void WraithFormAudioProcessorEditor::renderOpenGL() {
   else if (currentMode == VisualizerMode::Serato)
     renderSeratoWaveform();
   else if (currentMode == VisualizerMode::PhaseMeter)
-    renderPhaseMeter(); // Added Phase Meter case
+    renderPhaseMeter();
+  else if (currentMode == VisualizerMode::Vectorscope)
+    renderVectorscope();
   else if (currentMode == VisualizerMode::CosmicFlare)
     renderCosmicFlare();
   else if (currentMode == VisualizerMode::VolumetricExplosion)
@@ -777,47 +776,11 @@ void WraithFormAudioProcessorEditor::renderOpenGL() {
   else
     renderOscilloscope();
 
-  // 2. Overlay Splash Transition - REMOVED PER USER REQUEST
-  // if (isTransitioning) { ... }
-
-  // 3. Draw Professional Loudness Dashboard (Top Overlay)
+  // Draw Professional Loudness Dashboard (Top Overlay)
   renderLoudnessDashboard();
 
-  // 4. Draw Meters Sidebar
+  // Draw Meters Sidebar
   renderMeters();
-
-  // 5. Draw Phase Correlation Meter Overlay
-  // A small bar at the bottom: -1 (Left/Red) to +1 (Right/Cyan)
-  smoothedCorrelation =
-      smoothedCorrelation * 0.95f + currentCorrelation * 0.05f;
-
-  if (currentMode == VisualizerMode::Serato ||
-      currentMode == VisualizerMode::Spectrogram) {
-    glEnable(GL_SCISSOR_TEST);
-    int w = getWidth();
-    int h = getHeight();
-    float scale = (float)openGLContext.getRenderingScale();
-
-    // Background bar
-    glScissor((int)(10 * scale), (int)(10 * scale), (int)((w - 20) * scale),
-              (int)(5 * scale));
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Pure Black Phase Background
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // Meter Fill
-    float x_norm = (smoothedCorrelation + 1.0f) * 0.5f; // 0..1
-    int meterWidth = (int)((w - 20) * scale);
-    glScissor((int)(10 * scale), (int)(10 * scale), (int)(x_norm * meterWidth),
-              (int)(5 * scale));
-
-    if (smoothedCorrelation < 0)
-      glClearColor(0.4f, 0.45f, 0.5f, 0.8f); // Slate Grey
-    else
-      glClearColor(0.5f, 0.65f, 0.75f, 0.8f); // Steel Cyan
-
-    glClear(GL_COLOR_BUFFER_BIT);
-    glDisable(GL_SCISSOR_TEST);
-  }
 }
 
 void WraithFormAudioProcessorEditor::renderCircularOscilloscope() {
@@ -827,22 +790,34 @@ void WraithFormAudioProcessorEditor::renderCircularOscilloscope() {
   if (circularShader == nullptr)
     return;
 
+  // 1. Get initial viewport (assigned by parent)
+  GLint initialVp[4];
+  glGetIntegerv(GL_VIEWPORT, initialVp);
+  int vw = initialVp[2];
+  int vh = initialVp[3];
+  
+  GLint usableVp[4] = {initialVp[0], initialVp[1], initialVp[2], initialVp[3]};
+  applyUsableAreaMargins(usableVp);
+
+  float cx_usable = usableVp[0] + usableVp[2] / 2.0f;
+  float cy_usable = usableVp[1] + usableVp[3] / 2.0f;
+  float cx_initial = initialVp[0] + initialVp[2] / 2.0f;
+  float cy_initial = initialVp[1] + initialVp[3] / 2.0f;
+  
+  float offsetX = (cx_usable - cx_initial) / initialVp[2];
+  float offsetY = (cy_usable - cy_initial) / initialVp[3];
+
   // --- 1. Render CloudVortex background (opaque) ---
   if (cloudVortexShader != nullptr) {
     cloudVortexShader->use();
-    GLint vp2[4];
-    glGetIntegerv(GL_VIEWPORT, vp2);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glUniform2f(
         glGetUniformLocation(cloudVortexShader->getProgramID(), "u_resolution"),
-        (GLfloat)vp2[2], (GLfloat)vp2[3]);
+        (GLfloat)vw, (GLfloat)vh);
+    glUniform2f(
+        glGetUniformLocation(cloudVortexShader->getProgramID(), "u_centerOffset"),
+        offsetX, offsetY);
 
-    // Map time uniforms correctly:
-    // u_time drives the slow hue/sat cycle (prm1)
-    // u_cloudT drives the integrated speed tunnel motion (T)
-    // Map time uniforms correctly:
-    // u_time drives the slow hue/sat cycle (prm1) - use stableTime for
-    // smoothness u_cloudT drives the integrated speed tunnel motion (T)
     glUniform1f(
         glGetUniformLocation(cloudVortexShader->getProgramID(), "u_time"),
         (GLfloat)stableTime);
@@ -872,17 +847,22 @@ void WraithFormAudioProcessorEditor::renderCircularOscilloscope() {
   // Switch to ADDITIVE blend — ring and fireball glow layers on top of cloud
   glBlendFunc(GL_ONE, GL_ONE);
 
-  // --- 2. Render circular oscilloscope ring ---
+  // 2. Shrink Viewport to perfect square within usable area
+  int usableX = usableVp[0];
+  int usableY = usableVp[1];
+  int usableW = usableVp[2];
+  int usableH = usableVp[3];
+
+  int sideSize = std::min(usableW, usableH);
+  int xOff = (usableW - sideSize) / 2;
+  int yOff = (usableH - sideSize) / 2;
+
+  glViewport(usableX + xOff, usableY + yOff, sideSize, sideSize);
+
   circularShader->use();
-
-  // Update Uniforms
-  GLint vp[4];
-  glGetIntegerv(GL_VIEWPORT, vp);
-
-  GLint resolutionLoc =
-      glGetUniformLocation(circularShader->getProgramID(), "u_resolution");
-  if (resolutionLoc > -1)
-    glUniform2f(resolutionLoc, (GLfloat)vp[2], (GLfloat)vp[3]);
+  glUniform2f(
+      glGetUniformLocation(circularShader->getProgramID(), "u_resolution"),
+      (GLfloat)sideSize, (GLfloat)sideSize);
 
   GLint timeLoc =
       glGetUniformLocation(circularShader->getProgramID(), "u_time");
@@ -927,13 +907,13 @@ void WraithFormAudioProcessorEditor::renderCircularOscilloscope() {
     glDisableVertexAttribArray(positionAttribute);
   }
 
-  // --- Render Fireball Core (normal alpha blend = truly on top of ring) ---
+  // --- Render Fireball Core (norm alpha blend = truly on top of ring) ---
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   if (fireballShader != nullptr) {
     fireballShader->use();
     glUniform2f(
         glGetUniformLocation(fireballShader->getProgramID(), "u_resolution"),
-        (GLfloat)vp[2], (GLfloat)vp[3]);
+        (GLfloat)sideSize, (GLfloat)sideSize);
     glUniform1f(glGetUniformLocation(fireballShader->getProgramID(), "u_time"),
                 (GLfloat)cosmicFlareTime);
 
@@ -944,8 +924,13 @@ void WraithFormAudioProcessorEditor::renderCircularOscilloscope() {
     for (int i = 1; i < kickBins; ++i)
       rawKick += fftOutput[i];
     rawKick = juce::jlimit(0.0f, 1.0f, rawKick / (float)(kickBins - 1));
-    // Peak-hold: rise fast, decay slowly (~3-4 frames at 60fps)
-    smoothedKickEnergy = std::max(smoothedKickEnergy * 0.82f, rawKick);
+    // Morphous EMA filter: slower attack (less snappy), very slow release
+    // (morphous)
+    if (rawKick > smoothedKickEnergy) {
+      smoothedKickEnergy = smoothedKickEnergy * 0.85f + rawKick * 0.15f;
+    } else {
+      smoothedKickEnergy = smoothedKickEnergy * 0.95f + rawKick * 0.05f;
+    }
 
     glUniform1f(
         glGetUniformLocation(fireballShader->getProgramID(), "u_audioEnergy"),
@@ -1007,6 +992,13 @@ void WraithFormAudioProcessorEditor::renderOscilloscope() {
     float tr, tg, tb;
     getThemeRGB(tr, tg, tb);
     glUniform3f(glowColorLoc, tr, tg, tb);
+  }
+
+  GLint energyLoc =
+      glGetUniformLocation(oscilloscopeShader->getProgramID(), "u_audioEnergy");
+  if (energyLoc > -1) {
+    float rms = (audioProcessor.rmsL.load() + audioProcessor.rmsR.load()) * 0.5f;
+    glUniform1f(energyLoc, juce::jlimit(0.0f, 1.0f, rms * 2.5f));
   }
 
   glActiveTexture(GL_TEXTURE0);
@@ -1101,6 +1093,8 @@ void WraithFormAudioProcessorEditor::renderSpectrogram() {
 
 void WraithFormAudioProcessorEditor::openGLContextClosing() {
   using namespace juce::gl;
+  visualizerFBO.release();
+  postProcessShader = nullptr;
   oscilloscopeShader = nullptr;
   spectrogramShader = nullptr;
   glDeleteTextures(1, &audioTextureID);
@@ -1118,18 +1112,23 @@ void WraithFormAudioProcessorEditor::openGLContextClosing() {
 }
 
 void WraithFormAudioProcessorEditor::updateAudioData() {
+  // Apply any pending FFT size changes safely on the OpenGL thread
+  applyPendingFFTSize();
+
   // 1. Pull latest audio for Oscilloscope (using Mono sum for display)
   // We use a larger window to find a trigger point for stabilization
   const int searchSize = textureSize * 2;
-  std::vector<float> wideL(searchSize), wideR(searchSize);
-  audioProcessor.visualizerBufferL.readHistory(wideL, searchSize);
-  audioProcessor.visualizerBufferR.readHistory(wideR, searchSize);
+  if (wideLBuffer.size() != searchSize) wideLBuffer.resize(searchSize);
+  if (wideRBuffer.size() != searchSize) wideRBuffer.resize(searchSize);
+  if (wideSumBuffer.size() != searchSize) wideSumBuffer.resize(searchSize);
 
-  std::vector<float> wideSum(searchSize);
+  audioProcessor.visualizerBufferL.readHistory(wideLBuffer, searchSize);
+  audioProcessor.visualizerBufferR.readHistory(wideRBuffer, searchSize);
+
   for (int i = 0; i < searchSize; ++i)
-    wideSum[i] = (wideL[i] + wideR[i]) * 0.5f;
+    wideSumBuffer[i] = (wideLBuffer[i] + wideRBuffer[i]) * 0.5f;
 
-  int trigger = findTriggerPoint(wideSum, searchSize);
+  int trigger = findTriggerPoint(wideSumBuffer, searchSize);
 
   // Apply horizontal zoom by adjusting the sampling step
   float step = 1.0f / waveformZoom;
@@ -1145,60 +1144,90 @@ void WraithFormAudioProcessorEditor::updateAudioData() {
     float frac = sourceIdx - (float)idx1;
 
     // Linear interpolation for smooth zoomed visuals
-    float v1 = wideSum[trigger + idx1];
-    float v2 = wideSum[trigger + idx2];
+    float v1 = wideSumBuffer[trigger + idx1];
+    float v2 = wideSumBuffer[trigger + idx2];
     textureData[i] = v1 + (v2 - v1) * frac;
   }
 
-  // 1. Upload Image to Texture
-  // ... (existing code) ...
-
   // 1.5 Populate Phase Data (Stereo)
-  // We need synchronized L/R samples for the goniometer.
-  // We use a smaller window than the search, just enough for the frame.
-  int phasePoints = 2048; // Number of points to draw (Increased for detail)
+  // Use a standard professional window: 1024 samples
+  const int phasePoints = 1024;
   if (phaseData.size() != phasePoints)
     phaseData.resize(phasePoints);
+  if (vectorScopeData.size() != phasePoints)
+    vectorScopeData.resize(phasePoints);
+  if (phaseLBuffer.size() != phasePoints)
+    phaseLBuffer.resize(phasePoints);
+  if (phaseRBuffer.size() != phasePoints)
+    phaseRBuffer.resize(phasePoints);
 
-  std::vector<float> phaseL(phasePoints), phaseR(phasePoints);
-  audioProcessor.visualizerBufferL.readHistory(phaseL, phasePoints);
-  audioProcessor.visualizerBufferR.readHistory(phaseR, phasePoints);
+  audioProcessor.visualizerBufferL.readHistory(phaseLBuffer, phasePoints);
+  audioProcessor.visualizerBufferR.readHistory(phaseRBuffer, phasePoints);
 
+  float bassL = 0.0f, bassR = 0.0f;
   for (int i = 0; i < phasePoints; ++i) {
-    phaseData[i] = juce::Point<float>(phaseL[i], phaseR[i]);
+    // Decode from [0, 1] to [-1, 1] since visualizer buffer is 0.5-centered
+    float decodedL = (phaseLBuffer[i] - 0.5f) * 2.0f;
+    float decodedR = (phaseRBuffer[i] - 0.5f) * 2.0f;
+    float px = juce::jlimit(-0.95f, 0.95f, decodedL);
+    float py = juce::jlimit(-0.95f, 0.95f, decodedR);
+    phaseData[i] = juce::Point<float>(px, py);
+
+    // Continuous low-pass filter (~300Hz) for bass-dominant vectorscope dynamics:
+    // Sub-bass, 808s, and kicks pass with 100% force; harsh treble jitter is filtered out.
+    bassL += 0.085f * (decodedL - bassL);
+    bassR += 0.085f * (decodedR - bassR);
+
+    // 85% low-end trajectory + 15% transient crispness with 1.35x dynamic headroom
+    float vL = juce::jlimit(-0.98f, 0.98f, (bassL * 0.85f + decodedL * 0.15f) * 1.35f);
+    float vR = juce::jlimit(-0.98f, 0.98f, (bassR * 0.85f + decodedR * 0.15f) * 1.35f);
+    vectorScopeData[i] = juce::Point<float>(vL, vR);
   }
+
+  // 1.6 Compute Pearson Correlation (r)
+  float sumLR = 0, sumL2 = 0, sumR2 = 0;
+  for (int i = 0; i < phasePoints; ++i) {
+    float l = phaseData[i].x;
+    float r = phaseData[i].y;
+    sumLR += l * r;
+    sumL2 += l * l;
+    sumR2 += r * r;
+  }
+  float denom = std::sqrt(sumL2 * sumR2);
+  currentCorrelation = (denom > 1e-6f) ? (sumLR / denom) : 0.0f;
+
+  // Mastering-grade smoothing (~0.15 responsivity)
+  smoothedCorrelation =
+      smoothedCorrelation * 0.85f + currentCorrelation * 0.15f;
 
   // 2. FFT uses Mono sum
-  // Note: For a real-to-frequency FFT of size N, we provide N samples.
-  // The buffer must be size 2N to accommodate complex output.
-  // The buffer must be size 2N to accommodate complex output.
   int size = (int)1 << (int)currentFFTSize;
-  std::vector<float> fftInL(size), fftInR(size);
-  audioProcessor.visualizerBufferL.readHistory(fftInL, size);
-  audioProcessor.visualizerBufferR.readHistory(fftInR, size);
+  if (forwardFFT == nullptr || windowingFunction == nullptr)
+    return;
 
-  // 2B. Ensure Buffers are Large Enough (CRITICAL CRASH FIX)
-  // If currentFFTSize changes, we MUST resize vectors to avoid segfault.
-  if (fftBuffer.size() < size) {
-    fftBuffer.resize(size, 0.0f);
-  }
-  if (fftOutput.size() < size / 2) {
+  if (fftInLBuffer.size() < (size_t)size) fftInLBuffer.resize(size);
+  if (fftInRBuffer.size() < (size_t)size) fftInRBuffer.resize(size);
+
+  audioProcessor.visualizerBufferL.readHistory(fftInLBuffer, size);
+  audioProcessor.visualizerBufferR.readHistory(fftInRBuffer, size);
+
+  if (fftBuffer.size() < (size_t)(size * 2))
+    fftBuffer.resize(size * 2, 0.0f);
+  if (fftOutput.size() < (size_t)(size / 2))
     fftOutput.resize(size / 2, 0.0f);
-  }
 
   for (int i = 0; i < size; ++i) {
-    if (i < fftInL.size() && i < fftInR.size()) // Extra safety
-      fftBuffer[i] = (fftInL[i] + fftInR[i]) * 0.5f;
+    fftBuffer[i] = (fftInLBuffer[i] + fftInRBuffer[i]) * 0.5f;
   }
 
   windowingFunction->multiplyWithWindowingTable(fftBuffer.data(), size);
   forwardFFT->performFrequencyOnlyForwardTransform(fftBuffer.data());
 
   // 3. Map to Output (0..1)
-  int outputSize = size / 2; // Use theoretical size, not buffer capacity
+  int outputSize = size / 2;
   for (int i = 0; i < outputSize; ++i) {
-    if (i >= fftOutput.size())
-      break; // Safety break
+    if (i >= (int)fftOutput.size())
+      break;
 
     float mag = fftBuffer[i];
     float db = juce::Decibels::gainToDecibels(mag) -
@@ -1207,8 +1236,10 @@ void WraithFormAudioProcessorEditor::updateAudioData() {
     fftOutput[i] = juce::jlimit(0.0f, 1.0f, norm);
   }
 
-  // 4. Update Spectrogram Image (CPU Shift)
-  if (spectrogramImage.isValid()) {
+  // 4. Update Spectrogram Image (CPU Shift) - only when Spectrogram or QuadView is active!
+  bool isSpectrogramActive = (currentMode == VisualizerMode::Spectrogram ||
+                              currentMode == VisualizerMode::QuadView);
+  if (isSpectrogramActive && spectrogramImage.isValid()) {
     spectrogramImage.moveImageSection(0, 0, 1, 0,
                                       spectrogramImage.getWidth() - 1,
                                       spectrogramImage.getHeight());
@@ -1221,37 +1252,20 @@ void WraithFormAudioProcessorEditor::updateAudioData() {
     juce::Image::BitmapData bd(spectrogramImage,
                                juce::Image::BitmapData::readWrite);
     for (int y = 0; y < h; ++y) {
-      // Map y (0..h) to FFT bin (0..fftSize/2)
-      // Logarithmic-ish mapping for better visuals
-      float normalizedY =
-          1.0f -
-          (float)y / (float)h; // 1.0 at top, 0.0 at bottom (low freq bottom)
-      // normalizedY = normalizedY * normalizedY; // simple exp curve
-
+      float normalizedY = 1.0f - (float)y / (float)h;
       int bin = (int)(normalizedY * outputSize);
       if (bin >= outputSize)
         bin = outputSize - 1;
       if (bin < 0)
         bin = 0;
 
-      float val = (bin < fftOutput.size()) ? fftOutput[bin] : 0.0f;
+      float val = (bin < (int)fftOutput.size()) ? fftOutput[bin] : 0.0f;
+      val = pow(val, 0.78f);
 
-      // PUNCHY DYNAMIC RANGE: Apply subtle gamma for more mid-level detail
-      val = pow(val, 0.85f);
-
-      // Color Map (Strict Ice Blue Brand Compliance + High Brightness)
-      juce::Colour col = juce::Colour(0xFF000000); // Black
+      juce::Colour col = juce::Colour(0xFF000000);
       if (val > 0.01f) {
-        if (val < 0.4f) {
-          // Black -> Dark Deep Cyan (Faster ramp)
-          col = juce::Colour(0xFF000000)
-                    .interpolatedWith(juce::Colour(0xFF005566), val * 2.5f);
-        } else {
-          // Dark Deep Cyan -> Radiant Ice Blue (#D5FFFF)
-          col = juce::Colour(0xFF005566)
-                    .interpolatedWith(juce::Colour(0xFFD5FFFF),
-                                      (val - 0.4f) * 1.66f);
-        }
+        juce::uint8 lum = (juce::uint8)juce::jlimit(0.0f, 255.0f, val * 255.0f);
+        col = juce::Colour(lum, lum, lum);
       }
       bd.setPixelColour(x, y, col);
     }
@@ -1298,8 +1312,11 @@ void WraithFormAudioProcessorEditor::renderSeratoWaveform() {
               (float)cosmicFlareTime);
 
   // PASS SCALING LOGIC
+  // Zoom level 1.0f shows the full 5-second buffer history. 
+  // Previously this was 2.0f, causing it to whip across the screen too fast and compress the dynamics.
+  float seratoZoom = 1.0f;
   glUniform1f(glGetUniformLocation(seratoShader->getProgramID(), "u_zoom"),
-              waveformZoom);
+              seratoZoom);
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, waveformHistoryTexture);
@@ -1330,7 +1347,10 @@ void WraithFormAudioProcessorEditor::renderQuadView() {
   int h = getHeight();
   float desktopScale = (float)openGLContext.getRenderingScale();
 
-  int halfH = (int)((h * desktopScale) / 2);
+  int dashH = (int)(35 * desktopScale);
+  int availableH = h * desktopScale - dashH; // Exclude top bar
+
+  int halfH = availableH / 2;
   int thirdW = (int)((w * desktopScale) / 3);
   int halfW = (int)((w * desktopScale) / 2);
 
@@ -1368,22 +1388,43 @@ void WraithFormAudioProcessorEditor::renderPhaseMeter() {
   if (phaseShader == nullptr)
     return;
 
-  // --- 1. Render CloudVortex background ---
-  if (cloudVortexShader != nullptr) {
-    glDisable(GL_CULL_FACE); // Extra safety for the background quad
+  // 1. Get initial viewport (either full window or a Quadrant)
+  GLint initialVp[4];
+  glGetIntegerv(GL_VIEWPORT, initialVp);
+  
+  GLint usableVp[4] = {initialVp[0], initialVp[1], initialVp[2], initialVp[3]};
+  applyUsableAreaMargins(usableVp);
 
+  float cx_usable = usableVp[0] + usableVp[2] / 2.0f;
+  float cy_usable = usableVp[1] + usableVp[3] / 2.0f;
+  float cx_initial = initialVp[0] + initialVp[2] / 2.0f;
+  float cy_initial = initialVp[1] + initialVp[3] / 2.0f;
+  float offsetX = (cx_usable - cx_initial) / initialVp[2];
+  float offsetY = (cy_usable - cy_initial) / initialVp[3];
+
+  // --- 0. Persistence Fade (Fill viewport) ---
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glColor4f(0.0f, 0.0f, 0.0f, 0.15f);
+  glRectf(-1.0f, -1.0f, 1.0f, 1.0f);
+
+  // --- 1. Background (Fill initial parent viewport) ---
+  if (cloudVortexShader != nullptr) {
+    glDisable(GL_CULL_FACE);
     cloudVortexShader->use();
     glUniform1f(
         glGetUniformLocation(cloudVortexShader->getProgramID(), "u_time"),
-        (GLfloat)juce::Time::getMillisecondCounter() / 1000.0f);
+        (GLfloat)stableTime);
     glUniform2f(
         glGetUniformLocation(cloudVortexShader->getProgramID(), "u_resolution"),
-        (GLfloat)getWidth(), (GLfloat)getHeight());
+        (GLfloat)initialVp[2], (GLfloat)initialVp[3]);
+    glUniform2f(
+        glGetUniformLocation(cloudVortexShader->getProgramID(), "u_centerOffset"),
+        offsetX, offsetY);
     glUniform1f(
         glGetUniformLocation(cloudVortexShader->getProgramID(), "u_cloudT"),
         cloudTunnelTime);
 
-    // Pass audio energy
     float bassEnergy =
         (audioProcessor.rmsL.load() + audioProcessor.rmsR.load()) * 0.5f;
     glUniform1f(glGetUniformLocation(cloudVortexShader->getProgramID(),
@@ -1396,74 +1437,411 @@ void WraithFormAudioProcessorEditor::renderPhaseMeter() {
         glGetUniformLocation(cloudVortexShader->getProgramID(), "u_glowColor"),
         tr, tg, tb);
 
-    GLint posAttr =
+    static const GLfloat qV[] = {-1.0f, -1.0f, 1.0f, -1.0f,
+                                 -1.0f, 1.0f,  1.0f, 1.0f};
+    GLint pos =
         glGetAttribLocation(cloudVortexShader->getProgramID(), "position");
-    glEnableVertexAttribArray(posAttr);
-
-    // Static quad for zero-jitter and correct winding
-    static const GLfloat v[] = {-1.0f, -1.0f, 1.0f, -1.0f,
-                                -1.0f, 1.0f,  1.0f, 1.0f};
-    glVertexAttribPointer(posAttr, 2, GL_FLOAT, GL_FALSE, 0, v);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    glDisableVertexAttribArray(posAttr);
+    if (pos > -1) {
+      glEnableVertexAttribArray(pos);
+      glVertexAttribPointer(pos, 2, GL_FLOAT, GL_FALSE, 0, qV);
+      glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+      glDisableVertexAttribArray(pos);
+    }
   }
 
-  // --- 2. Render Phase Meter Particles ---
-  phaseShader->use();
+  int usableX = usableVp[0];
+  int usableY = usableVp[1];
+  int usableW = usableVp[2];
+  int usableH = usableVp[3];
 
-  // Robust State Setup
+  int sideSize = std::min(usableW, usableH);
+  int xOff = (usableW - sideSize) / 2;
+  int yOff = (usableH - sideSize) / 2;
+
+  glViewport(usableX + xOff, usableY + yOff, sideSize, sideSize);
+
+  phaseShader->use();
   glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE); // Pure Additive for strong glow
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
   glDisable(GL_SCISSOR_TEST);
   glDisable(GL_DEPTH_TEST);
-  glPointSize(2.0f); // Decreased for finer detail
+  glEnable(0x8861); // GL_POINT_SPRITE
+  glPointSize(24.0f);
 
-  GLint vp[4];
-  glGetIntegerv(GL_VIEWPORT, vp);
-
-  // Uniforms
+  // CRITICAL: Resolution uniform must match the PLOT viewport (Square)
   glUniform2f(glGetUniformLocation(phaseShader->getProgramID(), "u_resolution"),
-              (GLfloat)vp[2], (GLfloat)vp[3]);
-  glUniform1f(glGetUniformLocation(phaseShader->getProgramID(), "scale"),
-              2.45f);
-  {
-    float tr, tg, tb;
-    getThemeRGB(tr, tg, tb);
-    glUniform4f(glGetUniformLocation(phaseShader->getProgramID(), "color"), tr,
-                tg, tb, 0.9f);
-  }
+              (GLfloat)sideSize, (GLfloat)sideSize);
+  glUniform1f(glGetUniformLocation(phaseShader->getProgramID(), "scale"), 1.0f);
+
+  float tr, tg, tb;
+  getThemeRGB(tr, tg, tb);
+  glUniform4f(glGetUniformLocation(phaseShader->getProgramID(), "color"), tr,
+              tg, tb, 0.85f);
 
   // Data Selection
   const juce::Point<float> *dataPtr = nullptr;
   int dataSize = 0;
 
-  // Safe Mode Ring
-  static std::vector<juce::Point<float>> testPoints;
-  if (testPoints.empty()) {
-    for (float f = 0.0f; f < 6.28f; f += 0.1f) {
-      float rad = 0.5f;
-      testPoints.push_back({sin(f) * rad, cos(f) * rad}); // Ring
-    }
-    testPoints.push_back({0.0f, 0.0f}); // Center Dot
+  // Safe Mode Ring (Visualizes even when no audio is present)
+  static std::vector<juce::Point<float>> safeRing;
+  if (safeRing.empty()) {
+    for (float a = 0.0f; a < 6.283f; a += 0.05f)
+      safeRing.push_back({std::sin(a) * 0.5f, std::cos(a) * 0.5f});
   }
 
   if (phaseData.size() > 0) {
     dataPtr = phaseData.data();
     dataSize = (int)phaseData.size();
   } else {
-    dataPtr = testPoints.data();
-    dataSize = (int)testPoints.size();
+    dataPtr = safeRing.data();
+    dataSize = (int)safeRing.size();
   }
 
-  // Draw Points
-  glPointSize(4.0f);
-  GLint posLoc = glGetAttribLocation(phaseShader->getProgramID(), "position");
-  if (posLoc > -1 && dataSize > 0 && dataPtr != nullptr) {
+  if (dataSize > 0) {
+    glPointSize(4.0f);
+    GLint posLoc = glGetAttribLocation(phaseShader->getProgramID(), "position");
+    if (posLoc > -1) {
+      glEnableVertexAttribArray(posLoc);
+      glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, 0, dataPtr);
+      glDrawArrays(GL_POINTS, 0, dataSize);
+      glDisableVertexAttribArray(posLoc);
+    }
+  }
+
+  // --- 2. Render Correlation Bar Overlay ---
+  auto desktopScale = (float)openGLContext.getRenderingScale();
+  int fullW = (int)(getWidth() * desktopScale);
+  int fullH = (int)(getHeight() * desktopScale);
+
+  std::unique_ptr<juce::LowLevelGraphicsContext> glContext(
+      juce::createOpenGLGraphicsContext(openGLContext, fullW, fullH));
+  if (glContext != nullptr) {
+    juce::Graphics g(*glContext);
+    g.addTransform(juce::AffineTransform::scale(desktopScale));
+
+    int w = getWidth();
+    int h = getHeight();
+    int logSideM = (int)(100 * sideBarAnimation);
+    int barW = 320;
+    int barH = 10;
+    int barX =
+        (w - logSideM - barW) / 2; // Subtract sidebar width from centering
+    int barY = h - 75;
+
+    // Draw L/R Background Markings
+    g.setColour(juce::Colours::white.withAlpha(0.15f));
+    g.setFont(24.0f);
+    int availW = w - logSideM;
+    g.drawText("L", 40, h / 2 - 50, 100, 100, juce::Justification::centred);
+    g.drawText("R", availW - 140, h / 2 - 50, 100, 100,
+               juce::Justification::centred);
+
+    // Bar Background
+    g.setColour(juce::Colours::black.withAlpha(0.5f));
+    g.fillRoundedRectangle((float)barX, (float)barY, (float)barW, (float)barH,
+                           3.0f);
+    g.setColour(getThemeColour().withAlpha(0.2f));
+    g.drawRoundedRectangle((float)barX, (float)barY, (float)barW, (float)barH,
+                           3.0f, 1.0f);
+
+    // Center Tick (Mono Point)
+    g.setColour(juce::Colours::white.withAlpha(0.3f));
+    g.drawVerticalLine(barX + barW / 2, (float)barY, (float)(barY + barH));
+
+    // Correlation Fill
+    float corr = smoothedCorrelation; // -1 to 1
+    float fillWidth = std::abs(corr * (barW / 2.0f));
+    float fillStartX = (corr >= 0) ? (float)(barX + barW / 2) : (float)(barX + barW / 2) - fillWidth;
+
+    juce::Colour corrCol = getThemeColour();
+    g.setColour(corrCol.withAlpha(0.8f));
+    g.fillRect(juce::Rectangle<float>(fillStartX, (float)barY + 2, fillWidth,
+                                      (float)barH - 4));
+
+    // Labels
+    g.setColour(juce::Colours::white.withAlpha(0.7f));
+    g.setFont(11.0f);
+    g.drawText("-1", barX - 30, barY - 2, 25, barH + 4,
+               juce::Justification::centredRight);
+    g.drawText("0", barX + barW / 2 - 10, barY - 14, 20, 12,
+               juce::Justification::centred);
+    g.drawText("+1", barX + barW + 5, barY - 2, 25, barH + 4,
+               juce::Justification::centredLeft);
+
+    g.setFont(juce::Font(10.0f));
+    g.setColour(getThemeColour().withAlpha(0.6f));
+    g.drawText("PHASE CORRELATION", barX, barY + 14, barW, 12,
+               juce::Justification::centred);
+  }
+}
+
+void WraithFormAudioProcessorEditor::renderVectorscope() {
+  using namespace juce::gl;
+
+  if (vectorscopeShader == nullptr)
+    return;
+
+  // 1. Get initial viewport (assigned by parent)
+  GLint initialVp[4];
+  glGetIntegerv(GL_VIEWPORT, initialVp);
+  float ds = (float)openGLContext.getRenderingScale();
+
+  GLint usableVp[4] = {initialVp[0], initialVp[1], initialVp[2], initialVp[3]};
+  applyUsableAreaMargins(usableVp);
+
+  // Clear entire background to deep obsidian CRT black
+  glViewport(initialVp[0], initialVp[1], initialVp[2], initialVp[3]);
+  glClearColor(0.008f, 0.010f, 0.014f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
+
+  // 2. Setup centered square plotting viewport within usable area
+  int usableX = usableVp[0];
+  int usableY = usableVp[1];
+  int usableW = usableVp[2];
+  int usableH = usableVp[3];
+
+  int sideSize = std::min(usableW, usableH);
+  int xOff = (usableW - sideSize) / 2;
+  int yOff = (usableH - sideSize) / 2;
+  int plotX = usableX + xOff;
+  int plotY = usableY + yOff;
+
+  glViewport(plotX, plotY, sideSize, sideSize);
+
+  // 3. Render CRT Oscilloscope Screen Faceplate
+  if (vectorscopeGlowShader != nullptr) {
+    vectorscopeGlowShader->use();
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glUniform2f(glGetUniformLocation(vectorscopeGlowShader->getProgramID(), "u_resolution"),
+                (GLfloat)sideSize, (GLfloat)sideSize);
+
+    float bassDrive = std::max(smoothedBassEnergy, smoothedKickEnergy);
+    glUniform1f(glGetUniformLocation(vectorscopeGlowShader->getProgramID(), "u_audioEnergy"),
+                juce::jlimit(0.0f, 1.0f, bassDrive * 2.2f));
+
+    float tr, tg, tb;
+    getThemeRGB(tr, tg, tb);
+    glUniform3f(glGetUniformLocation(vectorscopeGlowShader->getProgramID(), "u_glowColor"), tr, tg, tb);
+
+    static const GLfloat qV[] = {-1.0f, -1.0f, 1.0f, -1.0f,
+                                 -1.0f, 1.0f,  1.0f, 1.0f};
+    GLint pos = glGetAttribLocation(vectorscopeGlowShader->getProgramID(), "position");
+    if (pos > -1) {
+      glEnableVertexAttribArray(pos);
+      glVertexAttribPointer(pos, 2, GL_FLOAT, GL_FALSE, 0, qV);
+      glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+      glDisableVertexAttribArray(pos);
+    }
+  }
+
+  // 4. Render Lissajous Beam Trace (Connected GL_LINE_STRIP + Phosphor Accumulation)
+  vectorscopeShader->use();
+
+  glEnable(GL_BLEND);
+  // Additive blending: beam overlaps burn bright into phosphor saturation
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+  glDisable(GL_SCISSOR_TEST);
+  glDisable(GL_DEPTH_TEST);
+
+  glUniform2f(
+      glGetUniformLocation(vectorscopeShader->getProgramID(), "u_resolution"),
+      (GLfloat)sideSize, (GLfloat)sideSize);
+  glUniform1f(glGetUniformLocation(vectorscopeShader->getProgramID(), "scale"),
+              1.0f);
+  GLint modeLoc = glGetUniformLocation(vectorscopeShader->getProgramID(), "u_plotMode");
+  if (modeLoc > -1)
+    glUniform1i(modeLoc, isLissajousXY ? 1 : 0);
+
+  glUniform1f(glGetUniformLocation(vectorscopeShader->getProgramID(), "u_bassEnergy"),
+              smoothedBassEnergy);
+  glUniform1f(glGetUniformLocation(vectorscopeShader->getProgramID(), "u_kickEnergy"),
+              smoothedKickEnergy);
+
+  float tr, tg, tb;
+  getThemeRGB(tr, tg, tb);
+
+  GLint posLoc =
+      glGetAttribLocation(vectorscopeShader->getProgramID(), "position");
+
+  int numSamples = (int)vectorScopeData.size();
+  if (posLoc > -1 && numSamples > 1) {
     glEnableVertexAttribArray(posLoc);
-    glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, 0, dataPtr);
-    glDrawArrays(GL_POINTS, 0, dataSize);
+    glVertexAttribPointer(posLoc, 2, GL_FLOAT, GL_FALSE, 0, vectorScopeData.data());
+
+    // Dynamic phosphor beam widths driven directly by bass & kick hits
+    float glowLineWidth = 3.0f + smoothedBassEnergy * 3.5f + smoothedKickEnergy * 2.0f;
+    float coreLineWidth = 1.2f + smoothedBassEnergy * 0.8f;
+    float glowAlpha     = 0.28f + smoothedBassEnergy * 0.25f;
+
+    // Pass 1: Diffuse Phosphor Glow Sheath (Thick line, swells on bass hits)
+    glUniform4f(glGetUniformLocation(vectorscopeShader->getProgramID(), "color"),
+                tr * (1.3f + smoothedBassEnergy * 0.8f),
+                tg * (1.3f + smoothedBassEnergy * 0.8f),
+                tb * (1.3f + smoothedBassEnergy * 0.8f),
+                glowAlpha);
+    glLineWidth(glowLineWidth);
+    glDrawArrays(GL_LINE_STRIP, 0, numSamples);
+
+    // Pass 2: Sharp Electron Core Beam (Thin line, intense luminous core)
+    float coreR = juce::jmin(1.0f, tr * 2.0f + 0.35f + smoothedKickEnergy * 0.2f);
+    float coreG = juce::jmin(1.0f, tg * 2.0f + 0.35f + smoothedKickEnergy * 0.2f);
+    float coreB = juce::jmin(1.0f, tb * 2.0f + 0.35f + smoothedKickEnergy * 0.2f);
+    glUniform4f(glGetUniformLocation(vectorscopeShader->getProgramID(), "color"),
+                coreR, coreG, coreB, 0.90f);
+    glLineWidth(coreLineWidth);
+    glDrawArrays(GL_LINE_STRIP, 0, numSamples);
+
+    // Pass 3: Phosphor Nodes (Point accumulation where signal lingers)
+    glPointSize(2.0f + smoothedBassEnergy * 2.5f);
+    glUniform4f(glGetUniformLocation(vectorscopeShader->getProgramID(), "color"),
+                tr * 1.6f, tg * 1.6f, tb * 1.6f, 0.20f + smoothedBassEnergy * 0.20f);
+    glDrawArrays(GL_POINTS, 0, numSamples);
+
+    glLineWidth(1.0f);
     glDisableVertexAttribArray(posLoc);
   }
+
+  // Restore normal alpha blending for UI overlays
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  // 5. Render Calibrated Scope Graticule & Reticle HUD (JUCE Graphics)
+  int fullW = (int)(getWidth() * ds);
+  int fullH = (int)(getHeight() * ds);
+
+  std::unique_ptr<juce::LowLevelGraphicsContext> glContext(
+      juce::createOpenGLGraphicsContext(openGLContext, fullW, fullH));
+  if (glContext != nullptr) {
+    juce::Graphics g(*glContext);
+    g.addTransform(juce::AffineTransform::scale(ds));
+
+    // Convert OpenGL physical pixel center to JUCE logical pixel coordinates
+    float logicalCx = (float)(plotX + sideSize / 2) / ds;
+    float logicalCy = (float)getHeight() - ((float)(plotY + sideSize / 2) / ds);
+    float R = ((float)sideSize / (2.0f * ds)) * 0.80f;
+
+    juce::Colour themeCol = getThemeColour();
+
+    // A. Concentric Circles (0 dB outer boundary and -6 dB inner reference)
+    g.setColour(themeCol.withAlpha(0.35f));
+    g.drawEllipse(logicalCx - R, logicalCy - R, R * 2.0f, R * 2.0f, 1.2f);
+
+    float r6 = R * 0.501187f; // -6 dB
+    g.setColour(themeCol.withAlpha(0.18f));
+    g.drawEllipse(logicalCx - r6, logicalCy - r6, r6 * 2.0f, r6 * 2.0f, 1.0f);
+
+    // B. Cardinal Axes with Precision Ticks
+    g.setColour(themeCol.withAlpha(0.28f));
+    g.drawLine(logicalCx, logicalCy - R * 1.06f, logicalCx, logicalCy + R * 1.06f, 1.0f);
+    g.drawLine(logicalCx - R * 1.06f, logicalCy, logicalCx + R * 1.06f, logicalCy, 1.0f);
+
+    // Axis Ticks at 25%, 50%, 75%, 100% radius
+    for (float frac : {0.25f, 0.50f, 0.75f, 1.0f}) {
+      float d = R * frac;
+      g.drawLine(logicalCx - 3.0f, logicalCy - d, logicalCx + 3.0f, logicalCy - d, 1.0f);
+      g.drawLine(logicalCx - 3.0f, logicalCy + d, logicalCx + 3.0f, logicalCy + d, 1.0f);
+      g.drawLine(logicalCx - d, logicalCy - 3.0f, logicalCx - d, logicalCy + 3.0f, 1.0f);
+      g.drawLine(logicalCx + d, logicalCy - 3.0f, logicalCx + d, logicalCy + 3.0f, 1.0f);
+    }
+
+    // C. Diagonal 45-Degree Reference Axes
+    float diag = R * 0.70710678f;
+    g.setColour(themeCol.withAlpha(0.22f));
+    g.drawLine(logicalCx - diag * 1.04f, logicalCy - diag * 1.04f,
+               logicalCx + diag * 1.04f, logicalCy + diag * 1.04f, 1.0f);
+    g.drawLine(logicalCx + diag * 1.04f, logicalCy - diag * 1.04f,
+               logicalCx - diag * 1.04f, logicalCy + diag * 1.04f, 1.0f);
+
+    // D. Center Crosshair Reticle
+    g.setColour(themeCol.withAlpha(0.50f));
+    g.drawEllipse(logicalCx - 3.0f, logicalCy - 3.0f, 6.0f, 6.0f, 1.0f);
+
+    // E. Reticle Labels based on Mode
+    g.setFont(juce::Font(11.0f, juce::Font::bold));
+
+    if (!isLissajousXY) {
+      // --- GONIOMETER (M/S EXPANDED) ---
+      // Top: Mid / In-Phase
+      g.setColour(juce::Colours::white.withAlpha(0.85f));
+      g.drawText("+M", (int)(logicalCx - 20.0f), (int)(logicalCy - R - 22.0f), 40, 16,
+                 juce::Justification::centred);
+
+      // Bottom: -M
+      g.setColour(juce::Colours::white.withAlpha(0.45f));
+      g.drawText("-M", (int)(logicalCx - 20.0f), (int)(logicalCy + R + 6.0f), 40, 16,
+                 juce::Justification::centred);
+
+      // Top-Left: +L Channel
+      g.setColour(juce::Colours::white.withAlpha(0.85f));
+      g.drawText("+L", (int)(logicalCx - diag - 32.0f), (int)(logicalCy - diag - 18.0f), 30, 16,
+                 juce::Justification::centred);
+
+      // Top-Right: +R Channel
+      g.drawText("+R", (int)(logicalCx + diag + 2.0f), (int)(logicalCy - diag - 18.0f), 30, 16,
+                 juce::Justification::centred);
+
+      // Sides: Stereo Difference
+      g.setColour(juce::Colours::white.withAlpha(0.45f));
+      g.drawText("-S", (int)(logicalCx - R - 35.0f), (int)(logicalCy - 8.0f), 30, 16,
+                 juce::Justification::centredRight);
+      g.drawText("+S", (int)(logicalCx + R + 5.0f), (int)(logicalCy - 8.0f), 30, 16,
+                 juce::Justification::centredLeft);
+    } else {
+      // --- CLASSIC LISSAJOUS (X: LEFT, Y: RIGHT) ---
+      // Top: Right Channel (+Y)
+      g.setColour(juce::Colours::white.withAlpha(0.85f));
+      g.drawText("+R", (int)(logicalCx - 20.0f), (int)(logicalCy - R - 22.0f), 40, 16,
+                 juce::Justification::centred);
+
+      // Bottom: -R
+      g.setColour(juce::Colours::white.withAlpha(0.45f));
+      g.drawText("-R", (int)(logicalCx - 20.0f), (int)(logicalCy + R + 6.0f), 40, 16,
+                 juce::Justification::centred);
+
+      // Right: Left Channel (+X)
+      g.setColour(juce::Colours::white.withAlpha(0.85f));
+      g.drawText("+L", (int)(logicalCx + R + 5.0f), (int)(logicalCy - 8.0f), 30, 16,
+                 juce::Justification::centredLeft);
+
+      // Left: -L
+      g.setColour(juce::Colours::white.withAlpha(0.45f));
+      g.drawText("-L", (int)(logicalCx - R - 35.0f), (int)(logicalCy - 8.0f), 30, 16,
+                 juce::Justification::centredRight);
+
+      // 45 deg diagonal: MONO (L = R)
+      g.drawText("MONO", (int)(logicalCx + diag + 2.0f), (int)(logicalCy - diag - 18.0f), 45, 16,
+                 juce::Justification::centredLeft);
+    }
+
+    // Scale ring readouts
+    g.setFont(juce::Font(9.0f));
+    g.setColour(themeCol.withAlpha(0.45f));
+    g.drawText("0 dB", (int)(logicalCx + 5.0f), (int)(logicalCy - R + 2.0f), 30, 12,
+               juce::Justification::left);
+    g.drawText("-6 dB", (int)(logicalCx + 5.0f), (int)(logicalCy - r6 + 2.0f), 30, 12,
+               juce::Justification::left);
+
+    // F. Bottom Status HUD: Mode & Stereo Phase Correlation
+    float corr = smoothedCorrelation;
+    juce::String corrStr = (corr >= 0.0f ? "+" : "") + juce::String(corr, 2);
+    juce::String modeName = isLissajousXY ? "LISSAJOUS (L/R)" : "GONIOMETER (M/S 2.2X)";
+    juce::String statusStr = "VECTORSCOPE: " + modeName + "  |  CORRELATION: " + corrStr;
+    if (corr > 0.85f) statusStr += " (MONO)";
+    else if (corr > 0.35f) statusStr += " (STEREO)";
+    else if (corr >= -0.15f) statusStr += " (WIDE)";
+    else statusStr += " (PHASE INVERTED)";
+
+    statusStr += "  [RIGHT-CLICK TO TOGGLE]";
+
+    g.setFont(juce::Font(10.0f));
+    g.setColour(themeCol.withAlpha(0.70f));
+    g.drawText(statusStr, (int)(logicalCx - 250.0f), (int)(logicalCy + R + 26.0f), 500, 16,
+               juce::Justification::centred);
+  }
+
+  // Restore full viewport for parent
+  glViewport(0, 0, (int)(getWidth() * ds), (int)(getHeight() * ds));
 }
 
 void WraithFormAudioProcessorEditor::renderCosmicFlare() {
@@ -1471,11 +1849,26 @@ void WraithFormAudioProcessorEditor::renderCosmicFlare() {
   if (cosmicFlareShader == nullptr)
     return;
 
-  cosmicFlareShader->use();
+  GLint initialVp[4];
+  glGetIntegerv(GL_VIEWPORT, initialVp);
+  
+  GLint usableVp[4] = {initialVp[0], initialVp[1], initialVp[2], initialVp[3]};
+  applyUsableAreaMargins(usableVp);
 
+  float cx_usable = usableVp[0] + usableVp[2] / 2.0f;
+  float cy_usable = usableVp[1] + usableVp[3] / 2.0f;
+  float cx_initial = initialVp[0] + initialVp[2] / 2.0f;
+  float cy_initial = initialVp[1] + initialVp[3] / 2.0f;
+  
+  float offsetX = (cx_usable - cx_initial) / initialVp[2];
+  float offsetY = (cy_usable - cy_initial) / initialVp[3];
+
+  glViewport(initialVp[0], initialVp[1], initialVp[2], initialVp[3]);
+
+  cosmicFlareShader->use();
   cosmicFlareShader->setUniform("u_time", cosmicFlareTime);
-  cosmicFlareShader->setUniform("u_resolution", (float)getWidth(),
-                                (float)getHeight());
+  cosmicFlareShader->setUniform("u_resolution", (float)initialVp[2], (float)initialVp[3]);
+  cosmicFlareShader->setUniform("u_centerOffset", offsetX, offsetY);
   cosmicFlareShader->setUniform("u_audioEnergy", smoothedBassEnergy);
 
   float tr, tg, tb;
@@ -1499,29 +1892,67 @@ void WraithFormAudioProcessorEditor::renderCosmicFlare() {
 
 void WraithFormAudioProcessorEditor::renderVolumetricExplosion() {
   using namespace juce::gl;
+
+  GLint initialVp[4];
+  glGetIntegerv(GL_VIEWPORT, initialVp);
+  
+  GLint usableVp[4] = {initialVp[0], initialVp[1], initialVp[2], initialVp[3]};
+  applyUsableAreaMargins(usableVp);
+
+  float cx_usable = usableVp[0] + usableVp[2] / 2.0f;
+  float cy_usable = usableVp[1] + usableVp[3] / 2.0f;
+  float cx_initial = initialVp[0] + initialVp[2] / 2.0f;
+  float cy_initial = initialVp[1] + initialVp[3] / 2.0f;
+  
+  float offsetX = (cx_usable - cx_initial) / initialVp[2];
+  float offsetY = (cy_usable - cy_initial) / initialVp[3];
+
+  glViewport(initialVp[0], initialVp[1], initialVp[2], initialVp[3]);
+
+  // Setup Geometry
+  static const GLfloat qVerts[] = {-1.0f, -1.0f, 1.0f, -1.0f,
+                                   -1.0f, 1.0f,  1.0f, 1.0f};
+
+  // Draw Liquid Fire Background
+  if (liquidFireShader != nullptr) {
+    liquidFireShader->use();
+    liquidFireShader->setUniform("u_time", (float)stableTime);
+    liquidFireShader->setUniform("u_resolution", (float)initialVp[2], (float)initialVp[3]);
+    liquidFireShader->setUniform("u_centerOffset", offsetX, offsetY);
+    liquidFireShader->setUniform("u_audioEnergy", smoothedBassEnergy);
+    float tr, tg, tb;
+    getThemeRGB(tr, tg, tb);
+    liquidFireShader->setUniform("u_glowColor", tr, tg, tb);
+
+    GLint posAttr = openGLContext.extensions.glGetAttribLocation(
+        liquidFireShader->getProgramID(), "position");
+    if (posAttr > -1) {
+      openGLContext.extensions.glEnableVertexAttribArray(posAttr);
+      openGLContext.extensions.glVertexAttribPointer(posAttr, 2, GL_FLOAT,
+                                                     GL_FALSE, 0, qVerts);
+      glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+      openGLContext.extensions.glDisableVertexAttribArray(posAttr);
+    }
+  }
+
+  // Draw Ethereal Flame on top
   if (volumetricExplosionShader == nullptr)
     return;
 
-  volumetricExplosionShader->use();
+  // Enable Additive Blending so it sits beautifully on the liquid fire
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-  volumetricExplosionShader->setUniform("u_time", (float)cosmicFlareTime);
-  volumetricExplosionShader->setUniform("u_resolution", (float)getWidth(),
-                                        (float)getHeight());
+  volumetricExplosionShader->use();
+  volumetricExplosionShader->setUniform("u_time", (float)stableTime);
+  volumetricExplosionShader->setUniform("u_resolution", (float)initialVp[2], (float)initialVp[3]);
+  volumetricExplosionShader->setUniform("u_centerOffset", offsetX, offsetY);
   volumetricExplosionShader->setUniform("u_audioEnergy", smoothedBassEnergy);
   volumetricExplosionShader->setUniform("u_kickEnergy", smoothedKickEnergy);
-
-  auto mousePos = getMouseXYRelative();
-  volumetricExplosionShader->setUniform("u_mouse",
-                                        (float)mousePos.x / (float)getWidth(),
-                                        (float)mousePos.y / (float)getHeight());
+  volumetricExplosionShader->setUniform("u_cloudT", (GLfloat)cloudTunnelTime);
 
   float tr, tg, tb;
   getThemeRGB(tr, tg, tb);
   volumetricExplosionShader->setUniform("u_glowColor", tr, tg, tb);
-
-  // Setup Quad Geometry for Full Screen Shader
-  static const GLfloat qVerts[] = {-1.0f, -1.0f, 1.0f, -1.0f,
-                                   -1.0f, 1.0f,  1.0f, 1.0f};
 
   GLint posAttrib = openGLContext.extensions.glGetAttribLocation(
       volumetricExplosionShader->getProgramID(), "position");
@@ -1532,19 +1963,54 @@ void WraithFormAudioProcessorEditor::renderVolumetricExplosion() {
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     openGLContext.extensions.glDisableVertexAttribArray(posAttrib);
   }
+
+  // Restore normal alpha blend so UI overlays draw correctly
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void WraithFormAudioProcessorEditor::createShaders() {
-  // Minimal Vertex Shader with UV pass-through
+  // Vertex shader — GLSL 1.30 core (OpenGL 3.2+ compatible)
   juce::String vertexShader = R"(
-        attribute vec2 position;
-        varying vec2 v_uv;
+        #version 130
+        in vec2 position;
+        out vec2 v_uv;
         void main()
         {
             gl_Position = vec4(position, 0.0, 1.0);
             v_uv = position * 0.5 + 0.5;
         }
     )";
+
+  // Post Processing Shader (Chromatic Aberration) — GLSL 1.30
+  juce::String postProcessFragmentShader = R"(
+      #version 130
+      uniform sampler2D u_image;
+      uniform float u_aberrationAmount;
+      in vec2 v_uv;
+      out vec4 fragColor;
+      void main() {
+          vec2 uv = v_uv;
+          vec2 center = vec2(0.5, 0.5);
+          float dist = distance(uv, center);
+          float amount = u_aberrationAmount * dist * 1.5;
+          vec4 col;
+          col.r = texture(u_image, vec2(uv.x + amount, uv.y)).r;
+          col.g = texture(u_image, uv).g;
+          col.b = texture(u_image, vec2(uv.x - amount, uv.y)).b;
+          col.a = texture(u_image, uv).a;
+          fragColor = col;
+      }
+  )";
+
+  std::unique_ptr<juce::OpenGLShaderProgram> ppShader(
+      new juce::OpenGLShaderProgram(openGLContext));
+  if (ppShader->addVertexShader(vertexShader) &&
+      ppShader->addFragmentShader(postProcessFragmentShader) &&
+      ppShader->link()) {
+    postProcessShader = std::move(ppShader);
+  } else {
+    DBG("postProcessShader FAILED: " + ppShader->getLastError());
+  }
 
   // Oscilloscope Shader
   std::unique_ptr<juce::OpenGLShaderProgram> oscShader(
@@ -1559,13 +2025,15 @@ void WraithFormAudioProcessorEditor::createShaders() {
   std::unique_ptr<juce::OpenGLShaderProgram> sShader(
       new juce::OpenGLShaderProgram(openGLContext));
   juce::String splashFragmentShader = R"(
-    varying vec2 v_uv;
+    #version 130
+    in vec2 v_uv;
+    out vec4 fragColor;
     uniform sampler2D u_image;
     uniform float u_alpha;
     void main()
     {
-        vec4 color = texture2D(u_image, v_uv);
-        gl_FragColor = vec4(color.rgb, color.a * u_alpha);
+        vec4 color = texture(u_image, v_uv);
+        fragColor = vec4(color.rgb, color.a * u_alpha);
     }
   )";
   if (sShader->addVertexShader(vertexShader) &&
@@ -1624,6 +2092,24 @@ void WraithFormAudioProcessorEditor::createShaders() {
     phaseShader = std::move(phaseS);
   }
 
+  // Vectorscope Shader (uses its own vertex shader)
+  std::unique_ptr<juce::OpenGLShaderProgram> vecS(
+      new juce::OpenGLShaderProgram(openGLContext));
+  if (vecS->addVertexShader(VectorscopeShader::vertexShader) &&
+      vecS->addFragmentShader(VectorscopeShader::fragmentShader) &&
+      vecS->link()) {
+    vectorscopeShader = std::move(vecS);
+  }
+
+  // Vectorscope Glow Shader
+  std::unique_ptr<juce::OpenGLShaderProgram> vecGlowS(
+      new juce::OpenGLShaderProgram(openGLContext));
+  if (vecGlowS->addVertexShader(VectorscopeShader::glowVertexShader) &&
+      vecGlowS->addFragmentShader(VectorscopeShader::glowFragmentShader) &&
+      vecGlowS->link()) {
+    vectorscopeGlowShader = std::move(vecGlowS);
+  }
+
   // Cosmic Flare Shader
   std::unique_ptr<juce::OpenGLShaderProgram> bhsS(
       new juce::OpenGLShaderProgram(openGLContext));
@@ -1639,5 +2125,12 @@ void WraithFormAudioProcessorEditor::createShaders() {
       volExpS->addFragmentShader(volumetricExplosionFragmentShader) &&
       volExpS->link()) {
     volumetricExplosionShader = std::move(volExpS);
+  }
+
+  std::unique_ptr<juce::OpenGLShaderProgram> lfS(
+      new juce::OpenGLShaderProgram(openGLContext));
+  if (lfS->addVertexShader(vertexShader) &&
+      lfS->addFragmentShader(liquidFireFragmentShader) && lfS->link()) {
+    liquidFireShader = std::move(lfS);
   }
 }

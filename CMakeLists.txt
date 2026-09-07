@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(WraithForm VERSION 1.2.0)
+project(WraithForm VERSION 1.3.0)
 
 # JUCE Setup using FetchContent
 include(FetchContent)
 FetchContent_Declare(
     juce
     GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
-    GIT_TAG        master
+    GIT_TAG        8.0.14
 )
 FetchContent_MakeAvailable(juce)
 
@@ -25,7 +25,7 @@ juce_add_plugin(WraithForm
     PLUGIN_CODE WrFm
     FORMATS VST3 Standalone
     PRODUCT_NAME "WraithForm"
-    VERSION 1.2.0
+    VERSION 1.3.0
     ICON_BIG "Source/icon.png"
 )
 
@@ -39,7 +39,13 @@ target_sources(WraithForm PRIVATE
     Source/VisualizerShader.h
     Source/SpectrogramShader.h
     Source/CircularOscilloscopeShader.h
+    Source/CloudVortexShader.h
     Source/CosmicFlareShader.h
+    Source/LiquidFireShader.h
+    Source/PhaseCorrelationShader.h
+    Source/VectorscopeShader.h
+    Source/VolumetricExplosionShader.h
+    Source/WaveformShader.h
     Source/WraithForm.rc
 )
 
@@ -48,6 +54,8 @@ target_compile_definitions(WraithForm PUBLIC
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
     JUCE_VST3_CAN_REPLACE_VST2=0
+    # Allow audio thru in Standalone without the "Muted" checkbox being ticked by default
+    JUCE_STANDALONE_FILTER_APP_WANTS_AUDIO_FEEDBACK=1
 )
 
 target_link_libraries(WraithForm PRIVATE
@@ -64,10 +72,12 @@ target_link_libraries(WraithForm PRIVATE
 # 1. Install Rules
 # ----------------
 # Standalone App
+target_compile_definitions(WraithForm PUBLIC JUCE_USE_CUSTOM_PLUGIN_STANDALONE_APP=1)
 install(TARGETS WraithForm_Standalone
-    DESTINATION .
+    RUNTIME DESTINATION bin
     COMPONENT Standalone
 )
+target_sources(WraithForm_Standalone PRIVATE Source/StandaloneApp.cpp)
 
 # README — placed next to the exe so users can open it from the Start Menu
 install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/README.md"

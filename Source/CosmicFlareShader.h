@@ -7,6 +7,7 @@
 */
 
 const static char *cosmicFlareFragmentShader = R"glsl(
+    #version 130
     #ifdef GL_ES
     precision highp float;
     #else
@@ -17,6 +18,7 @@ const static char *cosmicFlareFragmentShader = R"glsl(
     uniform vec2  u_resolution;
     uniform float u_audioEnergy;  // 0..1 bass energy
     uniform vec3  u_glowColor;    // Active theme color (Plasma, UV, etc.)
+    uniform vec2  u_centerOffset;
 
     // Parameters for Hyper-Contrast Wraith Aesthetic
     // HYPER-DRAMATIC RANGE: Stays dark until the burst hits
@@ -55,13 +57,11 @@ const static char *cosmicFlareFragmentShader = R"glsl(
         return f;
     }
 
+    out vec4 fragColor;
     void main() {
-        // Correct aspect and center-aligned
-        vec2 uv = (gl_FragCoord.xy / u_resolution.xy) - 0.5;
-        uv.x *= u_resolution.x / u_resolution.y;
-        
-        // SIDEBAR OFFSET: Adjusted for right sidebar centering
-        uv.x += 0.075; 
+        // Correct aspect and center-aligned using our unified offset
+        vec2 center = 0.5 * u_resolution.xy + u_centerOffset * u_resolution.xy;
+        vec2 uv = (gl_FragCoord.xy - center) / u_resolution.y;
 
         uv *= (curvature * 0.05 + 0.0001);
 
@@ -92,7 +92,7 @@ const static char *cosmicFlareFragmentShader = R"glsl(
         float core_falloff = smoothstep(spot_size + pulse * 0.4, spot_size - 0.1, r / 15.0);
         float halo_falloff = smoothstep(spot_size * 2.5 + pulse * 0.6, spot_size - 0.2, r / 15.0);
         
-        vec3 core_white = vec3(0.95, 1.0, 1.0) * core_falloff * (1.5 + core_burst); 
+        vec3 core_white = mix(vec3(1.0), baseTheme, 0.15) * core_falloff * (1.5 + core_burst); 
         vec3 core_halo  = baseTheme * halo_falloff * (1.0 + core_burst * 0.5); 
         
         // Composite
@@ -106,6 +106,6 @@ const static char *cosmicFlareFragmentShader = R"glsl(
         col *= base_brightness;
         col = clamp(col, 0.0, 2.5); 
         
-        gl_FragColor = vec4(sqrt(col), 1.0);
+        fragColor = vec4(sqrt(col), 1.0);
     }
 )glsl";

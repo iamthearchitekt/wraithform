@@ -32,17 +32,19 @@ public:
   void readHistory(std::vector<T> &dest, size_t numSamples) {
     size_t currentWrite = writeIndex.load(std::memory_order_acquire);
 
-    // We want the *latest* numSamples ending at currentWrite
-    // Since it's a ring buffer, we might need to wrap around.
+    if (bufferSize == 0) return;
+    if (numSamples > bufferSize)
+      numSamples = bufferSize;
 
     if (dest.size() != numSamples)
       dest.resize(numSamples);
 
-    for (size_t i = 0; i < numSamples; ++i) {
-      // Calculate index: currentWrite - numSamples + i
-      // But handle negative wrapping carefully
-      size_t idx = (currentWrite + bufferSize - numSamples + i) % bufferSize;
-      dest[i] = buffer[idx];
+    // Snapshot of latest numSamples ending at currentWrite
+    size_t startIdx = (currentWrite + bufferSize - numSamples) % bufferSize;
+    size_t firstChunk = std::min(numSamples, bufferSize - startIdx);
+    std::copy_n(buffer.data() + startIdx, firstChunk, dest.data());
+    if (firstChunk < numSamples) {
+      std::copy_n(buffer.data(), numSamples - firstChunk, dest.data() + firstChunk);
     }
   }
 
